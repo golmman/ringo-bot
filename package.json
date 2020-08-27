@@ -1,0 +1,24 @@
+{
+  "name": "ringo-bot",
+  "version": "1.0.0",
+  "description": "A small engine that lets you play ringo against it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/golmman/ringo-bot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/golmman/ringo-bot/issues"
+  },
+  "homepage": "https://github.com/golmman/ringo-bot#readme",
+  "devDependencies": {
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
+}
