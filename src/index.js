@@ -1,4 +1,4 @@
-const gameContext = {
+const context = {
     canvas: null,
 
     events: {
@@ -16,11 +16,11 @@ const gameContext = {
 };
 
 function drawBoard(ctx) {
-    const { tileSize } = gameContext.map;
-    const startX = gameContext.map.canvasX % tileSize;
-    const startY = gameContext.map.canvasY % tileSize;
-    const endX = gameContext.canvas.width;
-    const endY = gameContext.canvas.height;
+    const { tileSize } = context.map;
+    const startX = context.map.canvasX % tileSize;
+    const startY = context.map.canvasY % tileSize;
+    const endX = context.canvas.width;
+    const endY = context.canvas.height;
 
     ctx.strokeStyle = 'white';
 
@@ -44,19 +44,19 @@ function drawBoard(ctx) {
 function drawOrigin(ctx) {
     ctx.fillStyle = 'rgb(48, 48, 48)';
     ctx.fillRect(
-        gameContext.map.canvasX,
-        gameContext.map.canvasY,
-        gameContext.map.tileSize,
-        gameContext.map.tileSize,
+        context.map.canvasX,
+        context.map.canvasY,
+        context.map.tileSize,
+        context.map.tileSize,
     );
 }
 
 function drawMouseHighlight(ctx) {
-    const { canvasX, canvasY, tileSize } = gameContext.map;
-    const canvasRect = gameContext.canvas.getBoundingClientRect();
+    const { canvasX, canvasY, tileSize } = context.map;
+    const canvasRect = context.canvas.getBoundingClientRect();
 
-    const mouseX = gameContext.events.mouseMove.clientX - canvasRect.left;
-    const mouseY = gameContext.events.mouseMove.clientY - canvasRect.top;
+    const mouseX = context.events.mouseMove.clientX - canvasRect.left;
+    const mouseY = context.events.mouseMove.clientY - canvasRect.top;
 
     const canvasMouseX = mouseX - canvasX;
     const canvasMouseY = mouseY - canvasY;
@@ -81,10 +81,9 @@ function drawMouseHighlight(ctx) {
 function redraw() {
     console.log('redraw');
 
-    const ctx = gameContext.canvas.getContext("2d");
+    const ctx = context.canvas.getContext('2d');
 
-
-    ctx.clearRect(0, 0, gameContext.canvas.width, gameContext.canvas.height);
+    ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
     drawOrigin(ctx);
     drawBoard(ctx);
@@ -92,19 +91,19 @@ function redraw() {
 }
 
 function resizeCanvas() {
-    const canvas = document.getElementById("gameCanvas");
+    const canvas = document.getElementById('gameCanvas');
 
     canvas.width = 0.8 * window.innerWidth;
     canvas.height = 0.8 * window.innerHeight;
 
-    gameContext.canvas = canvas;
+    context.canvas = canvas;
 
     redraw();
 }
 
 function handleMouseClick(event) {
     console.log('handleMouseClick');
-    const canvasRect = gameContext.canvas.getBoundingClientRect();
+    const canvasRect = context.canvas.getBoundingClientRect();
 
     const mouseX = event.clientX - canvasRect.left;
     const mouseY = event.clientY - canvasRect.top;
@@ -115,12 +114,12 @@ function handleMouseClick(event) {
 function handleMouseWheel(event) {
     console.log(`handleMouseWheel: ${event.deltaY}`);
 
-    const canvasWidth = gameContext.canvas.width;
-    const canvasHeight = gameContext.canvas.height;
-    const mapCanvasX = gameContext.map.canvasX;
-    const mapCanvasY = gameContext.map.canvasY;
+    const canvasWidth = context.canvas.width;
+    const canvasHeight = context.canvas.height;
+    const mapCanvasX = context.map.canvasX;
+    const mapCanvasY = context.map.canvasY;
 
-    let tileSize = gameContext.map.tileSize;
+    let { tileSize } = context.map;
 
     const centerTileDistanceX = (canvasWidth / 2 - mapCanvasX) / tileSize;
     const centerTileDistanceY = (canvasHeight / 2 - mapCanvasY) / tileSize;
@@ -135,16 +134,16 @@ function handleMouseWheel(event) {
         tileSize = 10;
     }
 
-    gameContext.map.tileSize = tileSize;
+    context.map.tileSize = tileSize;
 
-    gameContext.map.canvasX = canvasWidth / 2 - tileSize * centerTileDistanceX;
-    gameContext.map.canvasY = canvasHeight / 2 - tileSize * centerTileDistanceY;
+    context.map.canvasX = canvasWidth / 2 - tileSize * centerTileDistanceX;
+    context.map.canvasY = canvasHeight / 2 - tileSize * centerTileDistanceY;
 
     redraw();
 }
 
 function handleMouseDown(event) {
-    console.log(`handleMouseDown`);
+    console.log('handleMouseDown');
     console.log(event);
 
     const {
@@ -152,37 +151,37 @@ function handleMouseDown(event) {
         screenY,
     } = event;
 
-    gameContext.events.mouseDown = {
+    context.events.mouseDown = {
         screenX,
         screenY,
     };
 
-    gameContext.events.isMouseDown = true;
+    context.events.isMouseDown = true;
 }
 
 function handleMouseUp(event) {
-    console.log(`handleMouseUp`);
-    console.log(gameContext);
+    console.log('handleMouseUp');
+    console.log(context);
 
     const {
         screenX,
         screenY,
     } = event;
 
-    gameContext.events.mouseUp = {
+    context.events.mouseUp = {
         screenX,
         screenY,
     };
 
-    gameContext.events.isMouseDown = false;
+    context.events.isMouseDown = false;
 }
 
 function handleMouseMove(event) {
-    if (gameContext.events.isMouseDown) {
-        const deltaX = event.screenX - gameContext.events.mouseMove.screenX;
-        const deltaY = event.screenY - gameContext.events.mouseMove.screenY;
-        gameContext.map.canvasX += deltaX;
-        gameContext.map.canvasY += deltaY;
+    if (context.events.isMouseDown) {
+        const deltaX = event.screenX - context.events.mouseMove.screenX;
+        const deltaY = event.screenY - context.events.mouseMove.screenY;
+        context.map.canvasX += deltaX;
+        context.map.canvasY += deltaY;
     }
 
     const {
@@ -192,7 +191,7 @@ function handleMouseMove(event) {
         screenY,
     } = event;
 
-    gameContext.events.mouseMove = {
+    context.events.mouseMove = {
         clientX,
         clientY,
         screenX,

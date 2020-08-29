@@ -4,8 +4,9 @@
   "description": "A small engine that lets you play ringo against it.",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx webpack"
+    "build": "npx webpack",
+    "lint": "npx eslint src/*",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,9 @@
   },
   "homepage": "https://github.com/golmman/ringo-bot#readme",
   "devDependencies": {
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
