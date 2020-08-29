@@ -93,7 +93,6 @@ function redraw() {
 
 function resizeCanvas() {
     const canvas = document.getElementById("gameCanvas");
-    canvas.addEventListener('mousedown', handleMouseDown);
 
     canvas.width = 0.8 * window.innerWidth;
     canvas.height = 0.8 * window.innerHeight;
@@ -101,6 +100,16 @@ function resizeCanvas() {
     gameContext.canvas = canvas;
 
     redraw();
+}
+
+function handleMouseClick(event) {
+    console.log('handleMouseClick');
+    const canvasRect = gameContext.canvas.getBoundingClientRect();
+
+    const mouseX = event.clientX - canvasRect.left;
+    const mouseY = event.clientY - canvasRect.top;
+
+    console.log(`${mouseX} ${mouseY}, click count: ${event.detail}`);
 }
 
 function handleMouseWheel(event) {
@@ -201,10 +210,11 @@ function restartGame(x) {
 
 window.addEventListener('resize', resizeCanvas);
 
-window.addEventListener('wheel', handleMouseWheel);
-//window.addEventListener('mousedown', handleMouseDown);
-window.addEventListener('mouseup', handleMouseUp);
+window.addEventListener('click', handleMouseClick);
+window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mousemove', handleMouseMove);
+window.addEventListener('mouseup', handleMouseUp);
+window.addEventListener('wheel', handleMouseWheel);
 
 window.onload = () => restartGame('game started');
 window.restartGame = restartGame;
