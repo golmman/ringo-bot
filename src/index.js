@@ -29,6 +29,7 @@ function drawBoard(ctx) {
         ctx.moveTo(x, 0);
         ctx.lineTo(x, endY);
         ctx.stroke();
+        ctx.closePath();
     }
 
     for (let y = startY; y <= endY; y += tileSize) {
@@ -36,7 +37,45 @@ function drawBoard(ctx) {
         ctx.moveTo(0, y);
         ctx.lineTo(endX, y);
         ctx.stroke();
+        ctx.closePath();
     }
+}
+
+function drawOrigin(ctx) {
+    ctx.fillStyle = 'rgb(48, 48, 48)';
+    ctx.fillRect(
+        gameContext.map.canvasX,
+        gameContext.map.canvasY,
+        gameContext.map.tileSize,
+        gameContext.map.tileSize,
+    );
+}
+
+function drawMouseHighlight(ctx) {
+    const { canvasX, canvasY, tileSize } = gameContext.map;
+    const canvasRect = gameContext.canvas.getBoundingClientRect();
+
+    const mouseX = gameContext.events.mouseMove.clientX - canvasRect.left;
+    const mouseY = gameContext.events.mouseMove.clientY - canvasRect.top;
+
+    const canvasMouseX = mouseX - canvasX;
+    const canvasMouseY = mouseY - canvasY;
+
+    const highlightX = canvasMouseX > 0
+        ? mouseX - canvasMouseX % tileSize
+        : mouseX - canvasMouseX % tileSize - tileSize;
+
+    const highlightY = canvasMouseY > 0
+        ? mouseY - canvasMouseY % tileSize
+        : mouseY - canvasMouseY % tileSize - tileSize;
+
+    ctx.fillStyle = 'rgb(48, 48, 48)';
+    ctx.fillRect(
+        highlightX,
+        highlightY,
+        tileSize,
+        tileSize,
+    );
 }
 
 function redraw() {
@@ -47,19 +86,14 @@ function redraw() {
 
     ctx.clearRect(0, 0, gameContext.canvas.width, gameContext.canvas.height);
 
-    ctx.fillStyle = 'rgb(32, 32, 32)';
-    ctx.fillRect(
-        gameContext.map.canvasX,
-        gameContext.map.canvasY,
-        gameContext.map.tileSize,
-        gameContext.map.tileSize,
-    );
-
+    drawOrigin(ctx);
     drawBoard(ctx);
+    drawMouseHighlight(ctx);
 }
 
 function resizeCanvas() {
     const canvas = document.getElementById("gameCanvas");
+    canvas.addEventListener('mousedown', handleMouseDown);
 
     canvas.width = 0.8 * window.innerWidth;
     canvas.height = 0.8 * window.innerHeight;
@@ -102,6 +136,7 @@ function handleMouseWheel(event) {
 
 function handleMouseDown(event) {
     console.log(`handleMouseDown`);
+    console.log(event);
 
     const {
         screenX,
@@ -137,24 +172,25 @@ function handleMouseMove(event) {
     if (gameContext.events.isMouseDown) {
         const deltaX = event.screenX - gameContext.events.mouseMove.screenX;
         const deltaY = event.screenY - gameContext.events.mouseMove.screenY;
-        //const deltaY = gameContext.events.mouseMove.screenY - gameContext.events.mouseDown.screenY;
-        //const deltaY = gameContext.events.mouseMove.screenY - gameContext.events.mouseDown.screenY;
         gameContext.map.canvasX += deltaX;
         gameContext.map.canvasY += deltaY;
-
-        redraw();
     }
 
     const {
+        clientX,
+        clientY,
         screenX,
         screenY,
     } = event;
 
     gameContext.events.mouseMove = {
+        clientX,
+        clientY,
         screenX,
         screenY,
     };
 
+    redraw();
 }
 
 function restartGame(x) {
@@ -166,7 +202,7 @@ function restartGame(x) {
 window.addEventListener('resize', resizeCanvas);
 
 window.addEventListener('wheel', handleMouseWheel);
-window.addEventListener('mousedown', handleMouseDown);
+//window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mouseup', handleMouseUp);
 window.addEventListener('mousemove', handleMouseMove);
 
