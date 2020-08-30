@@ -1,29 +1,46 @@
 const {
     DROP_DISK,
     EMPTY,
+    MARKED,
     GRID_SIZE,
     MAX_DISKS,
 } = require('./constants');
 
 function generateAdjacentEmptyIndices(board, index) {
-    const { grid } = board;
+    const { grid, duplicationMarkers } = board;
 
     const emptyIndices = [];
 
-    if (grid[index - GRID_SIZE] === EMPTY) {
-        emptyIndices.push(index - GRID_SIZE);
+    let i = index - GRID_SIZE;
+    if (grid[i] === EMPTY) {
+        emptyIndices.push(i);
+
+        duplicationMarkers.push(i);
+        grid[i] = MARKED;
     }
 
-    if (grid[index - 1] === EMPTY) {
-        emptyIndices.push(index - 1);
+    i = index - 1;
+    if (grid[i] === EMPTY) {
+        emptyIndices.push(i);
+
+        duplicationMarkers.push(i);
+        grid[i] = MARKED;
     }
 
-    if (grid[index + 1] === EMPTY) {
-        emptyIndices.push(index + 1);
+    i = index + 1;
+    if (grid[i] === EMPTY) {
+        emptyIndices.push(i);
+
+        duplicationMarkers.push(i);
+        grid[i] = MARKED;
     }
 
-    if (grid[index + GRID_SIZE] === EMPTY) {
-        emptyIndices.push(index + GRID_SIZE);
+    i = index + GRID_SIZE;
+    if (grid[i] === EMPTY) {
+        emptyIndices.push(i);
+
+        duplicationMarkers.push(i);
+        grid[i] = MARKED;
     }
 
     return emptyIndices;
@@ -44,6 +61,16 @@ function generateRingMoves(board, ring, compareRing, diskFrom, moves) {
     }
 }
 
+function removeDuplicationMarkers(board) {
+    const { duplicationMarkers, grid } = board;
+    for (let k = 0; k < duplicationMarkers.length; k += 1) {
+        grid[duplicationMarkers[k]] = EMPTY;
+    }
+
+    board.duplicationMarkers = [];
+}
+
+// populates the move list for the given ring.
 function generateDiskDropMoves(board, ring, diskFrom, moves) {
     const { blueRings, redRings } = board;
 
@@ -54,6 +81,8 @@ function generateDiskDropMoves(board, ring, diskFrom, moves) {
     for (let k = 0; k < redRings.length; k += 1) {
         generateRingMoves(board, ring, redRings[k], diskFrom, moves);
     }
+
+    removeDuplicationMarkers(board);
 }
 
 function generateRemovableDisks(board) {

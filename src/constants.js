@@ -1,5 +1,6 @@
 module.exports = {
     EMPTY: 0,
+    MARKED: 1,
     BLUE_DISK: 1000,
     RED_DISK: 2000,
     BLUE_RING: 3000,

@@ -20,6 +20,10 @@ function resetContext() {
 
         isBlueTurn: true,
         activeDisks: null,
+
+        // used to mark duplicate ring targets during move generation
+        duplicationMarkers: [],
+
         grid: [],
         blueDisks: [],
         redDisks: [],
