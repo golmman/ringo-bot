@@ -1,4 +1,4 @@
-const context = require('./context');
+const { context, resetContext } = require('./context');
 const { redraw } = require('./draw');
 const {
     handleMouseClick,
@@ -22,6 +22,7 @@ function resizeCanvas() {
 function restartGame(x) {
     console.log(x);
 
+    resetContext();
     resizeCanvas();
 }
 

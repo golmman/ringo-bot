@@ -1,9 +1,9 @@
-const context = require('./context');
+const { context } = require('./context');
 
 function drawBoard(ctx) {
-    const { tileSize } = context.map;
-    const startX = context.map.canvasX % tileSize;
-    const startY = context.map.canvasY % tileSize;
+    const { tileSize } = context.board;
+    const startX = context.board.canvasX % tileSize;
+    const startY = context.board.canvasY % tileSize;
     const endX = context.canvas.width;
     const endY = context.canvas.height;
 
@@ -29,15 +29,15 @@ function drawBoard(ctx) {
 function drawOrigin(ctx) {
     ctx.fillStyle = 'rgb(48, 48, 48)';
     ctx.fillRect(
-        context.map.canvasX,
-        context.map.canvasY,
-        context.map.tileSize,
-        context.map.tileSize,
+        context.board.canvasX,
+        context.board.canvasY,
+        context.board.tileSize,
+        context.board.tileSize,
     );
 }
 
 function drawMouseHighlight(ctx) {
-    const { canvasX, canvasY, tileSize } = context.map;
+    const { canvasX, canvasY, tileSize } = context.board;
     const canvasRect = context.canvas.getBoundingClientRect();
 
     const mouseX = context.events.mouseMove.clientX - canvasRect.left;

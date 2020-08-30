@@ -1,4 +1,4 @@
-const context = require('./context');
+const { context } = require('./context');
 const { redraw } = require('./draw');
 
 function handleMouseClick(event) {
@@ -32,8 +32,8 @@ function handleMouseMove(event) {
     if (context.events.isMouseDown) {
         const deltaX = event.screenX - context.events.mouseMove.screenX;
         const deltaY = event.screenY - context.events.mouseMove.screenY;
-        context.map.canvasX += deltaX;
-        context.map.canvasY += deltaY;
+        context.board.canvasX += deltaX;
+        context.board.canvasY += deltaY;
     }
 
     const {
@@ -75,10 +75,10 @@ function handleMouseWheel(event) {
 
     const canvasWidth = context.canvas.width;
     const canvasHeight = context.canvas.height;
-    const mapCanvasX = context.map.canvasX;
-    const mapCanvasY = context.map.canvasY;
+    const mapCanvasX = context.board.canvasX;
+    const mapCanvasY = context.board.canvasY;
 
-    let { tileSize } = context.map;
+    let { tileSize } = context.board;
 
     const centerTileDistanceX = (canvasWidth / 2 - mapCanvasX) / tileSize;
     const centerTileDistanceY = (canvasHeight / 2 - mapCanvasY) / tileSize;
@@ -93,10 +93,10 @@ function handleMouseWheel(event) {
         tileSize = 10;
     }
 
-    context.map.tileSize = tileSize;
+    context.board.tileSize = tileSize;
 
-    context.map.canvasX = canvasWidth / 2 - tileSize * centerTileDistanceX;
-    context.map.canvasY = canvasHeight / 2 - tileSize * centerTileDistanceY;
+    context.board.canvasX = canvasWidth / 2 - tileSize * centerTileDistanceX;
+    context.board.canvasY = canvasHeight / 2 - tileSize * centerTileDistanceY;
 
     redraw();
 }
