@@ -2,6 +2,10 @@ const { context } = require('./context');
 const { getCoords } = require('./board');
 const {
     GRID_SIZE,
+    OPPONENT_PHASE,
+    PICK_DISK_PHASE,
+    DROP_DISK_PHASE,
+    DROP_RING_PHASE,
 } = require('./constants');
 
 function drawBoard(ctx) {
@@ -27,6 +31,42 @@ function drawBoard(ctx) {
         ctx.lineTo(endX, y);
         ctx.stroke();
     }
+}
+
+function drawPossibleMoves(ctx) {
+    const { canvasX, canvasY, tileSize } = context.board;
+    const { phase } = context.events;
+    const { generatedMoves } = context.draw;
+    let highlightedTiles = new Set();
+
+    if (phase === OPPONENT_PHASE) {
+        return;
+    }
+
+    if (phase === PICK_DISK_PHASE) {
+        highlightedTiles = context.draw.pickDiskMoves;
+    }
+
+    if (phase === DROP_DISK_PHASE) {
+        highlightedTiles = context.draw.dropDiskMoves;
+    }
+
+    if (phase === DROP_RING_PHASE) {
+        highlightedTiles = context.draw.dropRingMoves;
+    }
+
+    highlightedTiles.forEach((tile) => {
+        const boardCoords = getCoords(tile);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+
+        ctx.fillStyle = 'rgb(16, 64, 16)';
+        ctx.fillRect(
+            canvasCoords.x,
+            canvasCoords.y,
+            tileSize,
+            tileSize,
+        );
+    });
 }
 
 function drawOrigin(ctx) {
@@ -178,6 +218,7 @@ function redraw() {
 
     drawOrigin(ctx);
     drawBoard(ctx);
+    drawPossibleMoves(ctx);
     drawMouseHighlight(ctx);
     drawPieces(ctx);
 }

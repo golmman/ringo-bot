@@ -1,6 +1,73 @@
 const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves } = require('./move');
+const {
+    OPPONENT_PHASE,
+    PICK_DISK_PHASE,
+    DROP_DISK_PHASE,
+    DROP_RING_PHASE,
+    MAX_DISKS,
+} = require('./constants');
+
+function generatePickDiskMoves() {
+    const { generatedMoves } = context.draw;
+
+    context.draw.pickDiskMoves = new Set();
+    for (let k = 0; k < generatedMoves.length; k += 1) {
+        if (generatedMoves[k].diskFrom !== -1) {
+            context.draw.pickDiskMoves.add(generatedMoves[k].diskFrom);
+        }
+    }
+}
+
+function generateDropDiskMoves() {
+    const { generatedMoves } = context.draw;
+
+    context.draw.dropDiskMoves = new Set();
+    for (let k = 0; k < generatedMoves.length; k += 1) {
+        context.draw.dropDiskMoves.add(generatedMoves[k].diskTo);
+    }
+}
+
+function generateDropRingMoves(diskTo) {
+    const { generatedMoves } = context.draw;
+
+    context.draw.dropRingMoves = new Set();
+    for (let k = 0; k < generatedMoves.length; k += 1) {
+        if (diskTo === generatedMoves[k].diskTo) {
+            context.draw.dropRingMoves.add(generatedMoves[k].ringTo);
+        }
+    }
+}
+
+function handleKeyDown(event) {
+    console.log(`handleKeyDown, keyCode: ${event.keyCode}`);
+
+    const { phase } = context.events;
+
+    if (event.keyCode === 70 && phase === OPPONENT_PHASE) { // f key
+        context.draw.generatedMoves = generateMoves(context.board);
+        generatePickDiskMoves();
+        generateDropDiskMoves();
+        generateDropRingMoves(32896);
+
+        if (context.board.activeDisks.length < MAX_DISKS) {
+            context.events.phase = DROP_DISK_PHASE;
+        } else {
+            context.events.phase = PICK_DISK_PHASE;
+        }
+
+        console.log(context.draw.generatedMoves);
+        console.log(`transitioned to phase: ${context.events.phase}`);
+
+        console.log('pick disk moves');
+        console.log(context.draw.pickDiskMoves);
+        console.log('drop disk moves');
+        console.log(context.draw.dropDiskMoves);
+        console.log('drop ring moves');
+        console.log(context.draw.dropRingMoves);
+    }
+}
 
 function handleMouseClick(event) {
     console.log('handleMouseClick');
@@ -12,8 +79,6 @@ function handleMouseClick(event) {
     console.log(`${mouseX} ${mouseY}, click count: ${event.detail}`);
 
     if (event.detail === 2) {
-        const moves = generateMoves(context.board);
-        console.log(moves);
     }
 }
 
@@ -108,6 +173,7 @@ function handleMouseWheel(event) {
 }
 
 module.exports = {
+    handleKeyDown,
     handleMouseClick,
     handleMouseDown,
     handleMouseMove,

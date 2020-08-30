@@ -2,6 +2,7 @@ const { context, resetContext } = require('./context');
 const { initBoard } = require('./board');
 const { redraw } = require('./draw');
 const {
+    handleKeyDown,
     handleMouseClick,
     handleMouseDown,
     handleMouseMove,
@@ -30,6 +31,7 @@ function restartGame(x) {
 
 window.addEventListener('resize', resizeCanvas);
 
+window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('click', handleMouseClick);
 window.addEventListener('mousedown', handleMouseDown);
 window.addEventListener('mousemove', handleMouseMove);
