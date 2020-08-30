@@ -16,14 +16,10 @@ function resetContext() {
         tileSize: 100,
 
         grid: [],
-        pieces: {
-            blue: [],
-            red: [],
-        },
-        rings: {
-            blue: [],
-            red: [],
-        },
+        blueDisks: [],
+        redDisks: [],
+        blueRings: [],
+        redRings: [],
     };
 }
 

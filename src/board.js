@@ -10,6 +10,22 @@ const {
     GRID_SIZE2,
 } = require('./constants');
 
+function putPiece(piece, x, y) {
+    const position = GRID_SIZE * y + x;
+    context.board.grid[position] = piece;
+    return position;
+}
+
+function putBlueRing(ring, x, y) {
+    const position = putPiece(ring, x, y);
+    context.board.blueRings.push(position);
+}
+
+function putRedRing(ring, x, y) {
+    const position = putPiece(ring, x, y);
+    context.board.redRings.push(position);
+}
+
 function initBoard() {
     const { board } = context;
 
@@ -32,23 +48,15 @@ function isBlueDisk(piece) {
     return intDiv(piece, BLUE_DISK) === 1;
 }
 
-function putPiece(piece, x, y) {
-    const position = GRID_SIZE * y + x;
-    context.board.grid[position] = piece;
-    return position;
-}
-
-function putBlueRing(ring, x, y) {
-    const position = putPiece(ring, x, y);
-    context.board.rings.blue.push(position);
-}
-
-function putRedRing(ring, x, y) {
-    const position = putPiece(ring, x, y);
-    context.board.rings.red.push(position);
+function getCoords(gridIndex) {
+    return {
+        x: gridIndex % GRID_SIZE,
+        y: intDiv(gridIndex, GRID_SIZE),
+    };
 }
 
 module.exports = {
+    getCoords,
     initBoard,
     isBlueDisk,
     putPiece,
