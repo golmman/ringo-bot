@@ -53,7 +53,7 @@ function initBoard() {
     putRedRing(RED_RING + 2, gridCenter + 2, gridCenter + 1);
     putRedRing(RED_RING + 3, gridCenter + 1, gridCenter + 2);
 
-    putBlueDisk(BLUE_DISK + 0, gridCenter + 1, gridCenter + 1);
+    //putBlueDisk(BLUE_DISK + 0, gridCenter + 1, gridCenter + 1);
     putBlueDisk(BLUE_DISK + 1, gridCenter + 2, gridCenter + 1);
     putRedDisk(RED_DISK + 0, gridCenter + 3, gridCenter + 4);
 }

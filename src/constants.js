@@ -5,6 +5,10 @@ module.exports = {
     BLUE_RING: 3000,
     RED_RING: 4000,
 
+    MAX_DISKS: 10,
+    MAX_RINGS: 4,
+    DROP_DISK: -1,
+
     GRID_SIZE: 256,
     GRID_SIZE2: 256 * 256,
 };

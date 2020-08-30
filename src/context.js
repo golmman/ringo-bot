@@ -18,6 +18,8 @@ function resetContext() {
         canvasY: 100,
         tileSize: 100,
 
+        isBlueTurn: true,
+        activeDisks: null,
         grid: [],
         blueDisks: [],
         redDisks: [],

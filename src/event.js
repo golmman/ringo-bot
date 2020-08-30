@@ -1,5 +1,6 @@
 const { context } = require('./context');
 const { redraw } = require('./draw');
+const { generateMoves } = require('./move');
 
 function handleMouseClick(event) {
     console.log('handleMouseClick');
@@ -9,6 +10,11 @@ function handleMouseClick(event) {
     const mouseY = event.clientY - canvasRect.top;
 
     console.log(`${mouseX} ${mouseY}, click count: ${event.detail}`);
+
+    if (event.detail === 2) {
+        const moves = generateMoves(context.board);
+        console.log(moves);
+    }
 }
 
 function handleMouseDown(event) {
