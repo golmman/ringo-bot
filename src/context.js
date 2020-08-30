@@ -6,7 +6,10 @@ function resetContext() {
     context.events = {
         mouseWheel: null,
         mouseDown: null,
-        mouseMove: null,
+        mouseMove: {
+            clientX: 0,
+            clientY: 0,
+        },
         isMouseDown: false,
     };
 

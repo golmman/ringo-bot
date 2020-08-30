@@ -11,11 +11,11 @@ function drawBoard(ctx) {
     const endX = context.canvas.width;
     const endY = context.canvas.height;
 
-    ctx.strokeStyle = 'white';
+    ctx.strokeStyle = 'rgb(160, 160, 160)';
+    ctx.lineWidth = 1;
 
     for (let x = startX; x <= endX; x += tileSize) {
         ctx.beginPath();
-        ctx.lineWidth = 1;
         ctx.moveTo(x, 0);
         ctx.lineTo(x, endY);
         ctx.stroke();
@@ -23,7 +23,6 @@ function drawBoard(ctx) {
 
     for (let y = startY; y <= endY; y += tileSize) {
         ctx.beginPath();
-        ctx.lineWidth = 1;
         ctx.moveTo(0, y);
         ctx.lineTo(endX, y);
         ctx.stroke();
@@ -31,13 +30,20 @@ function drawBoard(ctx) {
 }
 
 function drawOrigin(ctx) {
-    ctx.fillStyle = 'rgb(48, 48, 48)';
-    ctx.fillRect(
-        context.board.canvasX,
-        context.board.canvasY,
-        context.board.tileSize,
-        context.board.tileSize,
-    );
+    const { canvasX, canvasY, tileSize } = context.board;
+
+    ctx.strokeStyle = 'rgb(255, 255, 255)';
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+    ctx.moveTo(canvasX - tileSize, canvasY);
+    ctx.lineTo(canvasX + tileSize, canvasY);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(canvasX, canvasY - tileSize);
+    ctx.lineTo(canvasX, canvasY + tileSize);
+    ctx.stroke();
 }
 
 function drawMouseHighlight(ctx) {
@@ -76,6 +82,44 @@ function convertBoardToCanvasCoords({ x, y }) {
         x: canvasX + tx * tileSize,
         y: canvasY + ty * tileSize,
     };
+}
+
+function drawBlueDisks(ctx) {
+    const { blueDisks, tileSize } = context.board;
+
+    for (let k = 0; k < blueDisks.length; k += 1) {
+        const boardCoords = getCoords(blueDisks[k]);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb(24, 24, 160)';
+        ctx.arc(
+            canvasCoords.x + tileSize / 2,
+            canvasCoords.y + tileSize / 2,
+            0.3 * tileSize,
+            0, 2 * Math.PI,
+        );
+        ctx.fill();
+    }
+}
+
+function drawRedDisks(ctx) {
+    const { redDisks, tileSize } = context.board;
+
+    for (let k = 0; k < redDisks.length; k += 1) {
+        const boardCoords = getCoords(redDisks[k]);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+
+        ctx.beginPath();
+        ctx.fillStyle = 'rgb(160, 24, 24)';
+        ctx.arc(
+            canvasCoords.x + tileSize / 2,
+            canvasCoords.y + tileSize / 2,
+            0.3 * tileSize,
+            0, 2 * Math.PI,
+        );
+        ctx.fill();
+    }
 }
 
 function drawBlueRings(ctx) {
@@ -119,6 +163,8 @@ function drawRedRings(ctx) {
 }
 
 function drawPieces(ctx) {
+    drawBlueDisks(ctx);
+    drawRedDisks(ctx);
     drawBlueRings(ctx);
     drawRedRings(ctx);
 }

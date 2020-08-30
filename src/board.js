@@ -16,6 +16,16 @@ function putPiece(piece, x, y) {
     return position;
 }
 
+function putBlueDisk(disk, x, y) {
+    const position = putPiece(disk, x, y);
+    context.board.blueDisks.push(position);
+}
+
+function putRedDisk(disk, x, y) {
+    const position = putPiece(disk, x, y);
+    context.board.redDisks.push(position);
+}
+
 function putBlueRing(ring, x, y) {
     const position = putPiece(ring, x, y);
     context.board.blueRings.push(position);
@@ -42,6 +52,10 @@ function initBoard() {
     putRedRing(RED_RING + 1, gridCenter, gridCenter + 1);
     putRedRing(RED_RING + 2, gridCenter + 2, gridCenter + 1);
     putRedRing(RED_RING + 3, gridCenter + 1, gridCenter + 2);
+
+    putBlueDisk(BLUE_DISK + 0, gridCenter + 1, gridCenter + 1);
+    putBlueDisk(BLUE_DISK + 1, gridCenter + 2, gridCenter + 1);
+    putRedDisk(RED_DISK + 0, gridCenter + 3, gridCenter + 4);
 }
 
 function isBlueDisk(piece) {
