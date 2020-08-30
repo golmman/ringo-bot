@@ -6,6 +6,7 @@
     },
     "rules": {
         "indent": ["error", 4],
-        "no-mixed-operators": "off"
+        "no-mixed-operators": "off",
+        "no-bitwise": "off"
     }
 }

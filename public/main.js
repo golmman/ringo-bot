@@ -86,6 +86,17 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/board.js":
+/*!**********************!*\
+  !*** ./src/board.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("const { intDiv } = __webpack_require__(/*! ./util */ \"./src/util.js\");\nconst { context } = __webpack_require__(/*! ./context */ \"./src/context.js\");\nconst {\n    EMPTY,\n    BLUE_DISK,\n    RED_DISK,\n    BLUE_RING,\n    RED_RING,\n    GRID_SIZE,\n    GRID_SIZE2,\n} = __webpack_require__(/*! ./constants */ \"./src/constants.js\");\n\nfunction initBoard() {\n    const { board } = context;\n\n    board.grid = new Array(GRID_SIZE2).fill(EMPTY);\n\n    const gridCenter = GRID_SIZE / 2;\n\n    putBlueRing(BLUE_RING + 0, gridCenter, gridCenter);\n    putBlueRing(BLUE_RING + 1, gridCenter + 2, gridCenter);\n    putBlueRing(BLUE_RING + 2, gridCenter, gridCenter + 2);\n    putBlueRing(BLUE_RING + 3, gridCenter + 2, gridCenter + 2);\n\n    putRedRing(RED_RING + 0, gridCenter + 1, gridCenter);\n    putRedRing(RED_RING + 1, gridCenter, gridCenter + 1);\n    putRedRing(RED_RING + 2, gridCenter + 2, gridCenter + 1);\n    putRedRing(RED_RING + 3, gridCenter + 1, gridCenter + 2);\n\n    putPiece(1, 100, 100);\n    //board.rings\n}\n\nfunction isBlueDisk(piece) {\n    return intDiv(piece, BLUE_DISK) === 1;\n}\n\nfunction putPiece(piece, x, y) {\n    const position = GRID_SIZE * y + x;\n    context.board.grid[position] = piece;\n    return position;\n}\n\nfunction putBlueRing(ring, x, y) {\n    const position = putPiece(ring, x, y);\n    context.board.rings.blue.push(position);\n}\n\nfunction putRedRing(ring, x, y) {\n    const position = putPiece(ring, x, y);\n    context.board.rings.red.push(position);\n}\n\nmodule.exports = {\n    initBoard,\n    isBlueDisk,\n    putPiece,\n};\n\n\n//# sourceURL=webpack:///./src/board.js?");
+
+/***/ }),
+
 /***/ "./src/constants.js":
 /*!**************************!*\
   !*** ./src/constants.js ***!
@@ -93,7 +104,7 @@
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-eval("module.exports = {\n    EMPTY: 0,\n    PIECE_BLUE: 1,\n    PIECE_RED: 2,\n    RING_BLUE: 3,\n    RING_RED: 4,\n\n    GRID_SIZE: 256,\n};\n\n\n//# sourceURL=webpack:///./src/constants.js?");
+eval("module.exports = {\n    EMPTY: 0,\n    BLUE_DISK: 1000,\n    RED_DISK: 2000,\n    BLUE_RING: 3000,\n    RED_RING: 4000,\n\n    GRID_SIZE: 256,\n    GRID_SIZE2: 256 * 256,\n};\n\n\n//# sourceURL=webpack:///./src/constants.js?");
 
 /***/ }),
 
@@ -102,9 +113,9 @@ eval("module.exports = {\n    EMPTY: 0,\n    PIECE_BLUE: 1,\n    PIECE_RED: 2,\n
   !*** ./src/context.js ***!
   \************************/
 /*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-eval("const {\n    EMPTY,\n    RING_BLUE,\n    RING_RED,\n    GRID_SIZE,\n} = __webpack_require__(/*! ./constants */ \"./src/constants.js\");\n\nconst context = {};\n\nfunction initBoard() {\n    const { board } = context;\n\n    board.grid = new Array(GRID_SIZE).fill(\n        new Array(GRID_SIZE).fill(EMPTY),\n    );\n\n    const gridCenter = GRID_SIZE / 2;\n\n    board.grid[gridCenter][gridCenter] = RING_BLUE;\n    board.grid[gridCenter + 2][gridCenter] = RING_BLUE;\n    board.grid[gridCenter][gridCenter + 2] = RING_BLUE;\n    board.grid[gridCenter + 2][gridCenter + 2] = RING_BLUE;\n\n    board.grid[gridCenter + 1][gridCenter] = RING_RED;\n    board.grid[gridCenter][gridCenter + 1] = RING_RED;\n    board.grid[gridCenter + 2][gridCenter + 1] = RING_RED;\n    board.grid[gridCenter + 1][gridCenter + 2] = RING_RED;\n}\n\nfunction resetContext() {\n    context.canvas = null;\n\n    context.events = {\n        mouseWheel: null,\n        mouseDown: null,\n        mouseMove: null,\n        isMouseDown: false,\n    };\n\n    context.board = {\n        canvasX: 100,\n        canvasY: 100,\n        tileSize: 100,\n\n        grid: [],\n        pieces: {\n            blue: [],\n            red: [],\n        },\n        rings: {\n            blue: [],\n            red: [],\n        },\n    };\n\n    initBoard();\n}\n\nmodule.exports = {\n    context,\n    resetContext,\n};\n\n\n//# sourceURL=webpack:///./src/context.js?");
+eval("const context = {};\n\nfunction resetContext() {\n    context.canvas = null;\n\n    context.events = {\n        mouseWheel: null,\n        mouseDown: null,\n        mouseMove: null,\n        isMouseDown: false,\n    };\n\n    context.board = {\n        canvasX: 100,\n        canvasY: 100,\n        tileSize: 100,\n\n        grid: [],\n        pieces: {\n            blue: [],\n            red: [],\n        },\n        rings: {\n            blue: [],\n            red: [],\n        },\n    };\n}\n\nmodule.exports = {\n    context,\n    resetContext,\n};\n\n\n//# sourceURL=webpack:///./src/context.js?");
 
 /***/ }),
 
@@ -137,7 +148,18 @@ eval("const { context } = __webpack_require__(/*! ./context */ \"./src/context.j
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("const { context, resetContext } = __webpack_require__(/*! ./context */ \"./src/context.js\");\nconst { redraw } = __webpack_require__(/*! ./draw */ \"./src/draw.js\");\nconst {\n    handleMouseClick,\n    handleMouseDown,\n    handleMouseMove,\n    handleMouseUp,\n    handleMouseWheel,\n} = __webpack_require__(/*! ./event */ \"./src/event.js\");\n\nfunction resizeCanvas() {\n    const canvas = document.getElementById('gameCanvas');\n\n    canvas.width = 0.8 * window.innerWidth;\n    canvas.height = 0.8 * window.innerHeight;\n\n    context.canvas = canvas;\n\n    redraw();\n}\n\nfunction restartGame(x) {\n    console.log(x);\n\n    resetContext();\n    resizeCanvas();\n}\n\nwindow.addEventListener('resize', resizeCanvas);\n\nwindow.addEventListener('click', handleMouseClick);\nwindow.addEventListener('mousedown', handleMouseDown);\nwindow.addEventListener('mousemove', handleMouseMove);\nwindow.addEventListener('mouseup', handleMouseUp);\nwindow.addEventListener('wheel', handleMouseWheel);\n\nwindow.onload = () => restartGame('game started');\nwindow.restartGame = restartGame;\n\n\n//# sourceURL=webpack:///./src/index.js?");
+eval("const { context, resetContext } = __webpack_require__(/*! ./context */ \"./src/context.js\");\nconst { initBoard } = __webpack_require__(/*! ./board */ \"./src/board.js\");\nconst { redraw } = __webpack_require__(/*! ./draw */ \"./src/draw.js\");\nconst {\n    handleMouseClick,\n    handleMouseDown,\n    handleMouseMove,\n    handleMouseUp,\n    handleMouseWheel,\n} = __webpack_require__(/*! ./event */ \"./src/event.js\");\n\nfunction resizeCanvas() {\n    const canvas = document.getElementById('gameCanvas');\n\n    canvas.width = 0.8 * window.innerWidth;\n    canvas.height = 0.8 * window.innerHeight;\n\n    context.canvas = canvas;\n\n    redraw();\n}\n\nfunction restartGame(x) {\n    console.log(x);\n\n    resetContext();\n    initBoard();\n    resizeCanvas();\n}\n\nwindow.addEventListener('resize', resizeCanvas);\n\nwindow.addEventListener('click', handleMouseClick);\nwindow.addEventListener('mousedown', handleMouseDown);\nwindow.addEventListener('mousemove', handleMouseMove);\nwindow.addEventListener('mouseup', handleMouseUp);\nwindow.addEventListener('wheel', handleMouseWheel);\n\nwindow.onload = () => restartGame('game started');\nwindow.restartGame = restartGame;\n\n\n//# sourceURL=webpack:///./src/index.js?");
+
+/***/ }),
+
+/***/ "./src/util.js":
+/*!*********************!*\
+  !*** ./src/util.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("// Division function which behaves like most other languages when dividing\n// integers. E.g. intDiv(-2044, 1000) returns -2.\nfunction intDiv(dividend, divisor) {\n    return (dividend / divisor) | 0;\n}\n\nmodule.exports = {\n    intDiv,\n};\n\n\n//# sourceURL=webpack:///./src/util.js?");
 
 /***/ })
 
