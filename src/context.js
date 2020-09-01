@@ -20,6 +20,11 @@ function resetContext() {
     };
 
     context.draw = {
+        move: {
+            diskFrom: -1,
+            diskTo: -1,
+            ringTo: -1,
+        },
         generatedMoves: null,
         pickDiskMoves: null,
         dropDiskMoves: null,

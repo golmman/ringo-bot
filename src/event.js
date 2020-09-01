@@ -1,12 +1,14 @@
 const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves } = require('./move');
+const { intDiv } = require('./util');
 const {
     OPPONENT_PHASE,
     PICK_DISK_PHASE,
     DROP_DISK_PHASE,
     DROP_RING_PHASE,
     MAX_DISKS,
+    GRID_SIZE,
 } = require('./constants');
 
 function generatePickDiskMoves() {
@@ -51,6 +53,12 @@ function handleKeyDown(event) {
         generateDropDiskMoves();
         generateDropRingMoves(32896);
 
+        context.draw.move = {
+            diskFrom: -1,
+            diskTo: -1,
+            ringTo: -1,
+        };
+
         if (context.board.activeDisks.length < MAX_DISKS) {
             context.events.phase = DROP_DISK_PHASE;
         } else {
@@ -71,14 +79,38 @@ function handleKeyDown(event) {
 
 function handleMouseClick(event) {
     console.log('handleMouseClick');
+    const { phase } = context.events;
+    const { canvasX, canvasY, tileSize } = context.board;
+    const { dropDiskMoves } = context.draw;
+
     const canvasRect = context.canvas.getBoundingClientRect();
 
     const mouseX = event.clientX - canvasRect.left;
     const mouseY = event.clientY - canvasRect.top;
 
-    console.log(`${mouseX} ${mouseY}, click count: ${event.detail}`);
+    const gridXRaw = mouseX - canvasX > 0
+        ? intDiv(mouseX - canvasX, tileSize)
+        : intDiv(mouseX - canvasX, tileSize) - 1;
+    const gridX = gridXRaw + GRID_SIZE / 2;
+
+    const gridYRaw = mouseY - canvasY > 0
+        ? intDiv(mouseY - canvasY, tileSize)
+        : intDiv(mouseY - canvasY, tileSize) - 1;
+    const gridY = gridYRaw + GRID_SIZE / 2;
+
+    const gridIndex = GRID_SIZE * gridY + gridX;
+
+    console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
+    console.log(`grid: ${gridX} ${gridY}`);
 
     if (event.detail === 2) {
+        if (phase === DROP_DISK_PHASE) {
+            if (dropDiskMoves.has(gridIndex)) {
+                console.log('yes!');
+            } else {
+                console.log('no!');
+            }
+        }
     }
 }
 

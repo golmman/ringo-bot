@@ -216,9 +216,9 @@ function redraw() {
 
     ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
-    drawOrigin(ctx);
-    drawBoard(ctx);
     drawPossibleMoves(ctx);
+    drawBoard(ctx);
+    drawOrigin(ctx);
     drawMouseHighlight(ctx);
     drawPieces(ctx);
 }
