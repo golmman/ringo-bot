@@ -13,6 +13,9 @@ module.exports = {
     GRID_SIZE: 256,
     GRID_SIZE2: 256 * 256,
 
+    BLUE: 0,
+    RED: 1,
+
     OPPONENT_PHASE: 0,
     PICK_DISK_PHASE: 1,
     DROP_DISK_PHASE: 2,

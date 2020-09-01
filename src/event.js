@@ -1,3 +1,4 @@
+const { getGridIndexAt } = require('./board');
 const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves } = require('./move');
@@ -51,7 +52,6 @@ function handleKeyDown(event) {
         context.draw.generatedMoves = generateMoves(context.board);
         generatePickDiskMoves();
         generateDropDiskMoves();
-        generateDropRingMoves(32896);
 
         context.draw.move = {
             diskFrom: -1,
@@ -64,6 +64,8 @@ function handleKeyDown(event) {
         } else {
             context.events.phase = PICK_DISK_PHASE;
         }
+
+        redraw();
 
         console.log(context.draw.generatedMoves);
         console.log(`transitioned to phase: ${context.events.phase}`);
@@ -88,27 +90,21 @@ function handleMouseClick(event) {
     const mouseX = event.clientX - canvasRect.left;
     const mouseY = event.clientY - canvasRect.top;
 
-    const gridXRaw = mouseX - canvasX > 0
-        ? intDiv(mouseX - canvasX, tileSize)
-        : intDiv(mouseX - canvasX, tileSize) - 1;
-    const gridX = gridXRaw + GRID_SIZE / 2;
-
-    const gridYRaw = mouseY - canvasY > 0
-        ? intDiv(mouseY - canvasY, tileSize)
-        : intDiv(mouseY - canvasY, tileSize) - 1;
-    const gridY = gridYRaw + GRID_SIZE / 2;
-
-    const gridIndex = GRID_SIZE * gridY + gridX;
+    const gridIndex = getGridIndexAt({ canvasX: mouseX, canvasY: mouseY });
 
     console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
-    console.log(`grid: ${gridX} ${gridY}`);
 
     if (event.detail === 2) {
         if (phase === DROP_DISK_PHASE) {
             if (dropDiskMoves.has(gridIndex)) {
-                console.log('yes!');
+                console.log('drop disk phase legal move');
+                generateDropRingMoves(gridIndex);
+                context.draw.move.diskTo = gridIndex;
+                context.events.phase = DROP_RING_PHASE;
+
+                redraw();
             } else {
-                console.log('no!');
+                console.log('drop disk phase illegal move');
             }
         }
     }

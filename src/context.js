@@ -37,6 +37,7 @@ function resetContext() {
         canvasY: 100,
         tileSize: 100,
 
+        botColor: constants.RED,
         isBlueTurn: true,
         activeDisks: null,
 

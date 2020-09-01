@@ -59,7 +59,19 @@ function initBoard() {
 }
 
 function isBlueDisk(piece) {
-    return intDiv(piece, BLUE_DISK) === 1;
+    return intDiv(piece, 1000) === 1;
+}
+
+function isRedDisk(piece) {
+    return intDiv(piece, 1000) === 2;
+}
+
+function isBlueRing(piece) {
+    return intDiv(piece, 1000) === 3;
+}
+
+function isRedRing(piece) {
+    return intDiv(piece, 1000) === 4;
 }
 
 function getCoords(gridIndex) {
@@ -69,9 +81,33 @@ function getCoords(gridIndex) {
     };
 }
 
+function getGridIndexAt({ canvasX, canvasY }) {
+    const { canvasX: cX, canvasY: cY, tileSize } = context.board;
+
+    const gridXRaw = canvasX - cX > 0
+        ? intDiv(canvasX - cX, tileSize)
+        : intDiv(canvasX - cX, tileSize) - 1;
+    const gridX = gridXRaw + GRID_SIZE / 2;
+
+    const gridYRaw = canvasY - cY > 0
+        ? intDiv(canvasY - cY, tileSize)
+        : intDiv(canvasY - cY, tileSize) - 1;
+    const gridY = gridYRaw + GRID_SIZE / 2;
+
+    const gridIndex = GRID_SIZE * gridY + gridX;
+
+    console.log(`grid: ${gridX} ${gridY}`);
+
+    return gridIndex;
+}
+
 module.exports = {
     getCoords,
+    getGridIndexAt,
     initBoard,
     isBlueDisk,
+    isBlueRing,
+    isRedDisk,
+    isRedRing,
     putPiece,
 };

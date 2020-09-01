@@ -1,3 +1,4 @@
+const { isBlueRing } = require('./board');
 const { context } = require('./context');
 const { getCoords } = require('./board');
 const {
@@ -6,7 +7,63 @@ const {
     PICK_DISK_PHASE,
     DROP_DISK_PHASE,
     DROP_RING_PHASE,
+    RED,
+    BLUE,
 } = require('./constants');
+
+function drawBlueDisk(ctx, { x, y }) {
+    const { tileSize } = context.board;
+    ctx.beginPath();
+    ctx.fillStyle = 'rgb(24, 24, 160)';
+    ctx.arc(
+        x + tileSize / 2,
+        y + tileSize / 2,
+        0.3 * tileSize,
+        0, 2 * Math.PI,
+    );
+    ctx.fill();
+}
+
+function drawRedDisk(ctx, { x, y }) {
+    const { tileSize } = context.board;
+    ctx.beginPath();
+    ctx.fillStyle = 'rgb(160, 24, 24)';
+    ctx.arc(
+        x + tileSize / 2,
+        y + tileSize / 2,
+        0.3 * tileSize,
+        0, 2 * Math.PI,
+    );
+    ctx.fill();
+}
+
+function drawBlueRing(ctx, { x, y }) {
+    const { tileSize } = context.board;
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgb(24, 24, 160)';
+    ctx.lineWidth = 0.1 * tileSize;
+    ctx.arc(
+        x + tileSize / 2,
+        y + tileSize / 2,
+        0.4 * tileSize,
+        0, 2 * Math.PI,
+    );
+    ctx.stroke();
+}
+
+function drawRedRing(ctx, { x, y }) {
+    const { tileSize } = context.board;
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgb(160, 24, 24)';
+    ctx.lineWidth = 0.1 * tileSize;
+    ctx.arc(
+        x + tileSize / 2,
+        y + tileSize / 2,
+        0.4 * tileSize,
+        0, 2 * Math.PI,
+    );
+    ctx.stroke();
+}
 
 function drawBoard(ctx) {
     const { tileSize } = context.board;
@@ -30,6 +87,54 @@ function drawBoard(ctx) {
         ctx.moveTo(0, y);
         ctx.lineTo(endX, y);
         ctx.stroke();
+    }
+}
+
+function drawPhasePiece(ctx) {
+    const { phase } = context.events;
+    const { move } = context.draw;
+
+    const {
+        canvasX,
+        canvasY,
+        tileSize,
+        isBlueTurn,
+        grid,
+    } = context.board;
+
+    const canvasRect = context.canvas.getBoundingClientRect();
+
+    const mouseX = context.events.mouseMove.clientX - canvasRect.left;
+    const mouseY = context.events.mouseMove.clientY - canvasRect.top;
+
+    if (phase === OPPONENT_PHASE) {
+        return;
+    }
+
+    if (phase === PICK_DISK_PHASE) {
+        return;
+    }
+
+    if (phase === DROP_DISK_PHASE) {
+        const x = mouseX - tileSize / 2;
+        const y = mouseY - tileSize / 2;
+
+        if (isBlueTurn) {
+            drawBlueDisk(ctx, { x, y });
+        } else {
+            drawRedDisk(ctx, { x, y });
+        }
+    }
+
+    if (phase === DROP_RING_PHASE) {
+        const x = mouseX - tileSize / 2;
+        const y = mouseY - tileSize / 2;
+
+        if (isBlueRing(grid[move.diskTo])) {
+            drawBlueRing(ctx, { x, y });
+        } else {
+            drawRedRing(ctx, { x, y });
+        }
     }
 }
 
@@ -125,80 +230,78 @@ function convertBoardToCanvasCoords({ x, y }) {
 }
 
 function drawBlueDisks(ctx) {
-    const { blueDisks, tileSize } = context.board;
+    const { blueDisks, botColor } = context.board;
+    const { move } = context.draw;
 
     for (let k = 0; k < blueDisks.length; k += 1) {
         const boardCoords = getCoords(blueDisks[k]);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        ctx.beginPath();
-        ctx.fillStyle = 'rgb(24, 24, 160)';
-        ctx.arc(
-            canvasCoords.x + tileSize / 2,
-            canvasCoords.y + tileSize / 2,
-            0.3 * tileSize,
-            0, 2 * Math.PI,
-        );
-        ctx.fill();
+        if (move.diskFrom === blueDisks[k]) {
+            continue;
+        }
+
+        drawBlueDisk(ctx, canvasCoords);
+    }
+
+    if (move.diskTo > 0 && botColor === RED) {
+        const boardCoords = getCoords(move.diskTo);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+        drawBlueDisk(ctx, canvasCoords);
     }
 }
 
 function drawRedDisks(ctx) {
-    const { redDisks, tileSize } = context.board;
+    const { redDisks, botColor } = context.board;
+    const { move } = context.draw;
 
     for (let k = 0; k < redDisks.length; k += 1) {
         const boardCoords = getCoords(redDisks[k]);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        ctx.beginPath();
-        ctx.fillStyle = 'rgb(160, 24, 24)';
-        ctx.arc(
-            canvasCoords.x + tileSize / 2,
-            canvasCoords.y + tileSize / 2,
-            0.3 * tileSize,
-            0, 2 * Math.PI,
-        );
-        ctx.fill();
+        if (move.diskFrom === redDisks[k]) {
+            continue;
+        }
+
+        drawRedDisk(ctx, canvasCoords);
+    }
+
+    if (move.diskTo > 0 && botColor === BLUE) {
+        const boardCoords = getCoords(move.diskTo);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+        drawRedDisk(ctx, canvasCoords);
     }
 }
 
 function drawBlueRings(ctx) {
-    const { blueRings, tileSize } = context.board;
+    const { blueRings } = context.board;
+    const { move } = context.draw;
 
     for (let k = 0; k < blueRings.length; k += 1) {
         const boardCoords = getCoords(blueRings[k]);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        ctx.beginPath();
-        ctx.strokeStyle = 'rgb(24, 24, 160)';
-        ctx.lineWidth = 0.1 * tileSize;
-        ctx.arc(
-            canvasCoords.x + tileSize / 2,
-            canvasCoords.y + tileSize / 2,
-            0.4 * tileSize,
-            0, 2 * Math.PI,
-        );
-        ctx.stroke();
+        if (move.diskTo === blueRings[k]) {
+            continue;
+        }
+
+        drawBlueRing(ctx, canvasCoords);
     }
 }
 
 function drawRedRings(ctx) {
-    const { redRings, tileSize } = context.board;
+    const { redRings } = context.board;
+    const { move } = context.draw;
 
     for (let k = 0; k < redRings.length; k += 1) {
         const boardCoords = getCoords(redRings[k]);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        ctx.beginPath();
-        ctx.strokeStyle = 'rgb(160, 24, 24)';
-        ctx.lineWidth = 0.1 * tileSize;
-        ctx.arc(
-            canvasCoords.x + tileSize / 2,
-            canvasCoords.y + tileSize / 2,
-            0.4 * tileSize,
-            0, 2 * Math.PI,
-        );
-        ctx.stroke();
+        if (move.diskTo === redRings[k]) {
+            continue;
+        }
+
+        drawRedRing(ctx, canvasCoords);
     }
 }
 
@@ -221,6 +324,7 @@ function redraw() {
     drawOrigin(ctx);
     drawMouseHighlight(ctx);
     drawPieces(ctx);
+    drawPhasePiece(ctx);
 }
 
 module.exports = { redraw };
