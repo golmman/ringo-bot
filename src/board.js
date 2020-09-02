@@ -1,5 +1,4 @@
 const { intDiv } = require('./util');
-const { context } = require('./context');
 const {
     EMPTY,
     BLUE_DISK,
@@ -10,54 +9,89 @@ const {
     GRID_SIZE2,
 } = require('./constants');
 
-function setGridPiece(piece, gridIndex) {
-    context.board.grid[gridIndex] = piece;
+function getCoords(gridIndex) {
+    return {
+        x: gridIndex % GRID_SIZE,
+        y: intDiv(gridIndex, GRID_SIZE),
+    };
 }
 
-function deleteBlueDisk(gridIndex) {
-
+function getGridIndex({ x, y }) {
+    return GRID_SIZE * y + x;
 }
 
-function addBlueDisk(disk, gridIndex) {
-    setGridPiece(disk, gridIndex);
-    context.board.blueDisks.add(gridIndex);
+function setGridPiece(board, piece, gridIndex) {
+    board.grid[gridIndex] = piece;
 }
 
-function addRedDisk(disk, gridIndex) {
-    setGridPiece(disk, gridIndex);
-    context.board.redDisks.add(gridIndex);
+function unsetGridPiece(board, gridIndex) {
+    const oldPiece = board.grid[gridIndex];
+    board.grid[gridIndex] = EMPTY;
+    return oldPiece;
 }
 
-function addBlueRing(ring, gridIndex) {
-    setGridPiece(ring, gridIndex);
-    context.board.blueRings.add(gridIndex);
+function deleteBlueDisk(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.blueDisks.delete(gridIndex);
+    return oldPiece;
 }
 
-function addRedRing(ring, gridIndex) {
-    setGridPiece(ring, gridIndex);
-    context.board.redRings.add(gridIndex);
+function deleteRedDisk(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.redDisks.delete(gridIndex);
+    return oldPiece;
 }
 
-function initBoard() {
-    const { board } = context;
+function deleteBlueRing(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.blueRings.delete(gridIndex);
+    return oldPiece;
+}
 
+function deleteRedRing(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.redRings.delete(gridIndex);
+    return oldPiece;
+}
+
+function addBlueDisk(board, disk, gridIndex) {
+    setGridPiece(board, disk, gridIndex);
+    board.blueDisks.add(gridIndex);
+}
+
+function addRedDisk(board, disk, gridIndex) {
+    setGridPiece(board, disk, gridIndex);
+    board.redDisks.add(gridIndex);
+}
+
+function addBlueRing(board, ring, gridIndex) {
+    setGridPiece(board, ring, gridIndex);
+    board.blueRings.add(gridIndex);
+}
+
+function addRedRing(board, ring, gridIndex) {
+    setGridPiece(board, ring, gridIndex);
+    board.redRings.add(gridIndex);
+}
+
+function initBoard(board) {
     board.grid = new Array(GRID_SIZE2).fill(EMPTY);
 
     const gridCenter = GRID_SIZE / 2;
 
-    addBlueRing(BLUE_RING + 0, getGridIndex({ x: gridCenter, y: gridCenter }));
-    addBlueRing(BLUE_RING + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter }));
-    addBlueRing(BLUE_RING + 2, getGridIndex({ x: gridCenter, y: gridCenter + 2 }));
-    addBlueRing(BLUE_RING + 3, getGridIndex({ x: gridCenter + 2, y: gridCenter + 2 }));
+    addBlueRing(board, BLUE_RING + 0, getGridIndex({ x: gridCenter, y: gridCenter }));
+    addBlueRing(board, BLUE_RING + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter }));
+    addBlueRing(board, BLUE_RING + 2, getGridIndex({ x: gridCenter, y: gridCenter + 2 }));
+    addBlueRing(board, BLUE_RING + 3, getGridIndex({ x: gridCenter + 2, y: gridCenter + 2 }));
 
-    addRedRing(RED_RING + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter }));
-    addRedRing(RED_RING + 1, getGridIndex({ x: gridCenter, y: gridCenter + 1 }));
-    addRedRing(RED_RING + 2, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
-    addRedRing(RED_RING + 3, getGridIndex({ x: gridCenter + 1, y: gridCenter + 2 }));
+    addRedRing(board, RED_RING + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter }));
+    addRedRing(board, RED_RING + 1, getGridIndex({ x: gridCenter, y: gridCenter + 1 }));
+    addRedRing(board, RED_RING + 2, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
+    addRedRing(board, RED_RING + 3, getGridIndex({ x: gridCenter + 1, y: gridCenter + 2 }));
 
-    //addBlueDisk(BLUE_DISK + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter + 1 }));
-    addBlueDisk(BLUE_DISK + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
-    addRedDisk(RED_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 4 }));
+    //addBlueDisk(board, BLUE_DISK + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter + 1 }));
+    //addBlueDisk(board, BLUE_DISK + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
+    //addRedDisk(board, RED_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 4 }));
 }
 
 function isBlueDisk(piece) {
@@ -76,40 +110,16 @@ function isRedRing(piece) {
     return intDiv(piece, 1000) === 4;
 }
 
-function getCoords(gridIndex) {
-    return {
-        x: gridIndex % GRID_SIZE,
-        y: intDiv(gridIndex, GRID_SIZE),
-    };
-}
-
-function getGridIndex({ x, y }) {
-    return GRID_SIZE * y + x;
-}
-
-function getGridIndexAtCanvasPos({ x, y }) {
-    const { canvasX, canvasY, tileSize } = context.board;
-
-    const gridXRaw = x - canvasX > 0
-        ? intDiv(x - canvasX, tileSize)
-        : intDiv(x - canvasX, tileSize) - 1;
-    const gridX = gridXRaw + GRID_SIZE / 2;
-
-    const gridYRaw = y - canvasY > 0
-        ? intDiv(y - canvasY, tileSize)
-        : intDiv(y - canvasY, tileSize) - 1;
-    const gridY = gridYRaw + GRID_SIZE / 2;
-
-    const gridIndex = GRID_SIZE * gridY + gridX;
-
-    console.log(`grid: ${gridX} ${gridY}`);
-
-    return gridIndex;
-}
-
 module.exports = {
+    addBlueDisk,
+    addBlueRing,
+    addRedDisk,
+    addRedRing,
+    deleteBlueDisk,
+    deleteBlueRing,
+    deleteRedDisk,
+    deleteRedRing,
     getCoords,
-    getGridIndexAtCanvasPos,
     initBoard,
     isBlueDisk,
     isBlueRing,

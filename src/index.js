@@ -25,7 +25,7 @@ function restartGame(x) {
     console.log(x);
 
     resetContext();
-    initBoard();
+    initBoard(context.board);
     resizeCanvas();
 }
 

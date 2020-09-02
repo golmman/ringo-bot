@@ -1,4 +1,3 @@
-const { getGridIndexAtCanvasPos } = require('./board');
 const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves, makeMove } = require('./move');
@@ -11,6 +10,26 @@ const {
     MAX_DISKS,
     GRID_SIZE,
 } = require('./constants');
+
+function getGridIndexAtCanvasPos({ x, y }) {
+    const { canvasX, canvasY, tileSize } = context.board;
+
+    const gridXRaw = x - canvasX > 0
+        ? intDiv(x - canvasX, tileSize)
+        : intDiv(x - canvasX, tileSize) - 1;
+    const gridX = gridXRaw + GRID_SIZE / 2;
+
+    const gridYRaw = y - canvasY > 0
+        ? intDiv(y - canvasY, tileSize)
+        : intDiv(y - canvasY, tileSize) - 1;
+    const gridY = gridYRaw + GRID_SIZE / 2;
+
+    const gridIndex = GRID_SIZE * gridY + gridX;
+
+    console.log(`grid: ${gridX} ${gridY}`);
+
+    return gridIndex;
+}
 
 function generatePickDiskMoves() {
     const { generatedMoves } = context.draw;
@@ -112,9 +131,16 @@ function handleMouseClick(event) {
             if (dropRingMoves.has(gridIndex)) {
                 console.log('drop ring phase legal move');
                 context.draw.move.ringTo = gridIndex;
-                context.events.phase = OPPONENT_PHASE;
-
                 makeMove(context.board, context.draw.move);
+
+                context.events.phase = OPPONENT_PHASE;
+                context.board.isBlueTurn = !context.board.isBlueTurn;
+
+                context.draw.move = {
+                    diskFrom: -1,
+                    diskTo: -1,
+                    ringTo: -1,
+                };
 
                 redraw();
             } else {

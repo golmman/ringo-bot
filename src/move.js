@@ -1,9 +1,22 @@
 const {
+    addBlueDisk,
+    addBlueRing,
+    addRedDisk,
+    addRedRing,
+    deleteBlueDisk,
+    deleteBlueRing,
+    deleteRedDisk,
+    deleteRedRing,
+    isBlueRing,
+} = require('./board');
+const {
+    BLUE_DISK,
     DROP_DISK,
     EMPTY,
-    MARKED,
     GRID_SIZE,
+    MARKED,
     MAX_DISKS,
+    RED_DISK,
 } = require('./constants');
 
 function generateAdjacentEmptyIndices(board, index) {
@@ -124,6 +137,28 @@ function generateMoves(board) {
 function makeMove(board, { diskFrom, diskTo, ringTo }) {
     console.log(`make move ${JSON.stringify({ diskFrom, diskTo, ringTo })}`);
 
+    const nextDisk = board.isBlueTurn
+        ? BLUE_DISK + board.blueDisks.size
+        : RED_DISK + board.redDisks.size;
+
+    const { addDisk, deleteDisk } = board.isBlueTurn
+        ? { addDisk: addBlueDisk, deleteDisk: deleteBlueDisk }
+        : { addDisk: addRedDisk, deleteDisk: deleteRedDisk };
+
+    const ringToBeDeleted = board.grid[diskTo];
+    const { addRing, deleteRing } = isBlueRing(ringToBeDeleted)
+        ? { addRing: addBlueRing, deleteRing: deleteBlueRing }
+        : { addRing: addRedRing, deleteRing: deleteRedRing };
+
+    const deletedDisk = diskFrom > 0
+        ? deleteDisk(board, diskFrom)
+        : nextDisk;
+    const deletedRing = deleteRing(board, diskTo)
+
+    addDisk(board, deletedDisk, diskTo);
+    addRing(board, deleteRing, ringTo);
+
+    console.log(board.redRings);
 
     return 1;
 }

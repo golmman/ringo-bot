@@ -230,7 +230,7 @@ function convertBoardToCanvasCoords({ x, y }) {
 }
 
 function drawBlueDisks(ctx) {
-    const { blueDisks, botColor } = context.board;
+    const { blueDisks, isBlueTurn } = context.board;
     const { move } = context.draw;
 
     blueDisks.forEach((blueDisk) => {
@@ -244,7 +244,7 @@ function drawBlueDisks(ctx) {
         drawBlueDisk(ctx, canvasCoords);
     });
 
-    if (move.diskTo > 0 && botColor === RED) {
+    if (move.diskTo > 0 && isBlueTurn) {
         const boardCoords = getCoords(move.diskTo);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
         drawBlueDisk(ctx, canvasCoords);
@@ -252,7 +252,7 @@ function drawBlueDisks(ctx) {
 }
 
 function drawRedDisks(ctx) {
-    const { redDisks, botColor } = context.board;
+    const { redDisks, isBlueTurn } = context.board;
     const { move } = context.draw;
 
     redDisks.forEach((redDisk) => {
@@ -266,7 +266,7 @@ function drawRedDisks(ctx) {
         drawRedDisk(ctx, canvasCoords);
     });
 
-    if (move.diskTo > 0 && botColor === BLUE) {
+    if (move.diskTo > 0 && !isBlueTurn) {
         const boardCoords = getCoords(move.diskTo);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
         drawRedDisk(ctx, canvasCoords);
