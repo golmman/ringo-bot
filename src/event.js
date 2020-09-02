@@ -59,7 +59,7 @@ function handleKeyDown(event) {
             ringTo: -1,
         };
 
-        if (context.board.activeDisks.length < MAX_DISKS) {
+        if (context.board.activeDisks.size < MAX_DISKS) {
             context.events.phase = DROP_DISK_PHASE;
         } else {
             context.events.phase = PICK_DISK_PHASE;

@@ -18,22 +18,22 @@ function putPiece(piece, x, y) {
 
 function putBlueDisk(disk, x, y) {
     const position = putPiece(disk, x, y);
-    context.board.blueDisks.push(position);
+    context.board.blueDisks.add(position);
 }
 
 function putRedDisk(disk, x, y) {
     const position = putPiece(disk, x, y);
-    context.board.redDisks.push(position);
+    context.board.redDisks.add(position);
 }
 
 function putBlueRing(ring, x, y) {
     const position = putPiece(ring, x, y);
-    context.board.blueRings.push(position);
+    context.board.blueRings.add(position);
 }
 
 function putRedRing(ring, x, y) {
     const position = putPiece(ring, x, y);
-    context.board.redRings.push(position);
+    context.board.redRings.add(position);
 }
 
 function initBoard() {

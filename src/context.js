@@ -45,10 +45,10 @@ function resetContext() {
         duplicationMarkers: [],
 
         grid: [],
-        blueDisks: [],
-        redDisks: [],
-        blueRings: [],
-        redRings: [],
+        blueDisks: new Set(),
+        redDisks: new Set(),
+        blueRings: new Set(),
+        redRings: new Set(),
     };
 }
 

@@ -233,16 +233,16 @@ function drawBlueDisks(ctx) {
     const { blueDisks, botColor } = context.board;
     const { move } = context.draw;
 
-    for (let k = 0; k < blueDisks.length; k += 1) {
-        const boardCoords = getCoords(blueDisks[k]);
+    blueDisks.forEach((blueDisk) => {
+        const boardCoords = getCoords(blueDisk);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        if (move.diskFrom === blueDisks[k]) {
-            continue;
+        if (move.diskFrom === blueDisk) {
+            return;
         }
 
         drawBlueDisk(ctx, canvasCoords);
-    }
+    });
 
     if (move.diskTo > 0 && botColor === RED) {
         const boardCoords = getCoords(move.diskTo);
@@ -255,16 +255,16 @@ function drawRedDisks(ctx) {
     const { redDisks, botColor } = context.board;
     const { move } = context.draw;
 
-    for (let k = 0; k < redDisks.length; k += 1) {
-        const boardCoords = getCoords(redDisks[k]);
+    redDisks.forEach((redDisk) => {
+        const boardCoords = getCoords(redDisk);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        if (move.diskFrom === redDisks[k]) {
-            continue;
+        if (move.diskFrom === redDisk) {
+            return;
         }
 
         drawRedDisk(ctx, canvasCoords);
-    }
+    });
 
     if (move.diskTo > 0 && botColor === BLUE) {
         const boardCoords = getCoords(move.diskTo);
@@ -277,32 +277,32 @@ function drawBlueRings(ctx) {
     const { blueRings } = context.board;
     const { move } = context.draw;
 
-    for (let k = 0; k < blueRings.length; k += 1) {
-        const boardCoords = getCoords(blueRings[k]);
+    blueRings.forEach((blueRing) => {
+        const boardCoords = getCoords(blueRing);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        if (move.diskTo === blueRings[k]) {
-            continue;
+        if (move.diskTo === blueRing) {
+            return;
         }
 
         drawBlueRing(ctx, canvasCoords);
-    }
+    });
 }
 
 function drawRedRings(ctx) {
     const { redRings } = context.board;
     const { move } = context.draw;
 
-    for (let k = 0; k < redRings.length; k += 1) {
-        const boardCoords = getCoords(redRings[k]);
+    redRings.forEach((redRing) => {
+        const boardCoords = getCoords(redRing);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        if (move.diskTo === redRings[k]) {
-            continue;
+        if (move.diskTo === redRing) {
+            return;
         }
 
         drawRedRing(ctx, canvasCoords);
-    }
+    });
 }
 
 function drawPieces(ctx) {

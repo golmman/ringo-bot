@@ -74,13 +74,13 @@ function removeDuplicationMarkers(board) {
 function generateDiskDropMoves(board, ring, diskFrom, moves) {
     const { blueRings, redRings } = board;
 
-    for (let k = 0; k < blueRings.length; k += 1) {
-        generateRingMoves(board, ring, blueRings[k], diskFrom, moves);
-    }
+    blueRings.forEach((blueRing) => {
+        generateRingMoves(board, ring, blueRing, diskFrom, moves);
+    });
 
-    for (let k = 0; k < redRings.length; k += 1) {
-        generateRingMoves(board, ring, redRings[k], diskFrom, moves);
-    }
+    redRings.forEach((redRing) => {
+        generateRingMoves(board, ring, redRing, diskFrom, moves);
+    });
 
     removeDuplicationMarkers(board);
 }
@@ -99,13 +99,13 @@ function generateDiskTransferMoves(board, ring, moves) {
 }
 
 function generateMovesForRings(board, rings, moves) {
-    for (let k = 0; k < rings.length; k += 1) {
-        if (board.activeDisks.length < MAX_DISKS) {
-            generateDiskDropMoves(board, rings[k], DROP_DISK, moves);
+    rings.forEach((ring) => {
+        if (board.activeDisks.size < MAX_DISKS) {
+            generateDiskDropMoves(board, ring, DROP_DISK, moves);
         } else {
-            generateDiskTransferMoves(board, rings[k], moves);
+            generateDiskTransferMoves(board, ring, moves);
         }
-    }
+    });
 }
 
 function generateMoves(board) {
