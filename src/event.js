@@ -1,7 +1,7 @@
 const { getGridIndexAt } = require('./board');
 const { context } = require('./context');
 const { redraw } = require('./draw');
-const { generateMoves } = require('./move');
+const { generateMoves, makeMove } = require('./move');
 const { intDiv } = require('./util');
 const {
     OPPONENT_PHASE,
@@ -83,7 +83,7 @@ function handleMouseClick(event) {
     console.log('handleMouseClick');
     const { phase } = context.events;
     const { canvasX, canvasY, tileSize } = context.board;
-    const { dropDiskMoves } = context.draw;
+    const { dropDiskMoves, dropRingMoves } = context.draw;
 
     const canvasRect = context.canvas.getBoundingClientRect();
 
@@ -105,6 +105,20 @@ function handleMouseClick(event) {
                 redraw();
             } else {
                 console.log('drop disk phase illegal move');
+            }
+        }
+
+        if (phase === DROP_RING_PHASE) {
+            if (dropRingMoves.has(gridIndex)) {
+                console.log('drop ring phase legal move');
+                context.draw.move.ringTo = gridIndex;
+                context.events.phase = OPPONENT_PHASE;
+
+                makeMove(context.board, context.draw.move);
+
+                redraw();
+            } else {
+                console.log('drop ring phase illegal move');
             }
         }
     }

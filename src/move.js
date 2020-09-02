@@ -121,16 +121,19 @@ function generateMoves(board) {
     return moves;
 }
 
-function doMove(board, { diskFrom, diskTo, ringTo }) {
+function makeMove(board, { diskFrom, diskTo, ringTo }) {
+    console.log(`make move ${JSON.stringify({ diskFrom, diskTo, ringTo })}`);
+
+
     return 1;
 }
 
-function undoMove(board, { diskFrom, diskTo, ringTo }) {
+function unmakeMove(board, { diskFrom, diskTo, ringTo }) {
     return 1;
 }
 
 module.exports = {
-    doMove,
-    undoMove,
+    makeMove,
+    unmakeMove,
     generateMoves,
 };
