@@ -1,4 +1,4 @@
-const { getGridIndexAt } = require('./board');
+const { getGridIndexAtCanvasPos } = require('./board');
 const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves, makeMove } = require('./move');
@@ -90,7 +90,7 @@ function handleMouseClick(event) {
     const mouseX = event.clientX - canvasRect.left;
     const mouseY = event.clientY - canvasRect.top;
 
-    const gridIndex = getGridIndexAt({ canvasX: mouseX, canvasY: mouseY });
+    const gridIndex = getGridIndexAtCanvasPos({ x: mouseX, y: mouseY });
 
     console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
 

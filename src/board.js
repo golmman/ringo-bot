@@ -10,30 +10,32 @@ const {
     GRID_SIZE2,
 } = require('./constants');
 
-function putPiece(piece, x, y) {
-    const position = GRID_SIZE * y + x;
-    context.board.grid[position] = piece;
-    return position;
+function setGridPiece(piece, gridIndex) {
+    context.board.grid[gridIndex] = piece;
 }
 
-function putBlueDisk(disk, x, y) {
-    const position = putPiece(disk, x, y);
-    context.board.blueDisks.add(position);
+function deleteBlueDisk(gridIndex) {
+
 }
 
-function putRedDisk(disk, x, y) {
-    const position = putPiece(disk, x, y);
-    context.board.redDisks.add(position);
+function addBlueDisk(disk, gridIndex) {
+    setGridPiece(disk, gridIndex);
+    context.board.blueDisks.add(gridIndex);
 }
 
-function putBlueRing(ring, x, y) {
-    const position = putPiece(ring, x, y);
-    context.board.blueRings.add(position);
+function addRedDisk(disk, gridIndex) {
+    setGridPiece(disk, gridIndex);
+    context.board.redDisks.add(gridIndex);
 }
 
-function putRedRing(ring, x, y) {
-    const position = putPiece(ring, x, y);
-    context.board.redRings.add(position);
+function addBlueRing(ring, gridIndex) {
+    setGridPiece(ring, gridIndex);
+    context.board.blueRings.add(gridIndex);
+}
+
+function addRedRing(ring, gridIndex) {
+    setGridPiece(ring, gridIndex);
+    context.board.redRings.add(gridIndex);
 }
 
 function initBoard() {
@@ -43,19 +45,19 @@ function initBoard() {
 
     const gridCenter = GRID_SIZE / 2;
 
-    putBlueRing(BLUE_RING + 0, gridCenter, gridCenter);
-    putBlueRing(BLUE_RING + 1, gridCenter + 2, gridCenter);
-    putBlueRing(BLUE_RING + 2, gridCenter, gridCenter + 2);
-    putBlueRing(BLUE_RING + 3, gridCenter + 2, gridCenter + 2);
+    addBlueRing(BLUE_RING + 0, getGridIndex({ x: gridCenter, y: gridCenter }));
+    addBlueRing(BLUE_RING + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter }));
+    addBlueRing(BLUE_RING + 2, getGridIndex({ x: gridCenter, y: gridCenter + 2 }));
+    addBlueRing(BLUE_RING + 3, getGridIndex({ x: gridCenter + 2, y: gridCenter + 2 }));
 
-    putRedRing(RED_RING + 0, gridCenter + 1, gridCenter);
-    putRedRing(RED_RING + 1, gridCenter, gridCenter + 1);
-    putRedRing(RED_RING + 2, gridCenter + 2, gridCenter + 1);
-    putRedRing(RED_RING + 3, gridCenter + 1, gridCenter + 2);
+    addRedRing(RED_RING + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter }));
+    addRedRing(RED_RING + 1, getGridIndex({ x: gridCenter, y: gridCenter + 1 }));
+    addRedRing(RED_RING + 2, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
+    addRedRing(RED_RING + 3, getGridIndex({ x: gridCenter + 1, y: gridCenter + 2 }));
 
-    //putBlueDisk(BLUE_DISK + 0, gridCenter + 1, gridCenter + 1);
-    putBlueDisk(BLUE_DISK + 1, gridCenter + 2, gridCenter + 1);
-    putRedDisk(RED_DISK + 0, gridCenter + 3, gridCenter + 4);
+    //addBlueDisk(BLUE_DISK + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter + 1 }));
+    addBlueDisk(BLUE_DISK + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
+    addRedDisk(RED_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 4 }));
 }
 
 function isBlueDisk(piece) {
@@ -81,17 +83,21 @@ function getCoords(gridIndex) {
     };
 }
 
-function getGridIndexAt({ canvasX, canvasY }) {
-    const { canvasX: cX, canvasY: cY, tileSize } = context.board;
+function getGridIndex({ x, y }) {
+    return GRID_SIZE * y + x;
+}
 
-    const gridXRaw = canvasX - cX > 0
-        ? intDiv(canvasX - cX, tileSize)
-        : intDiv(canvasX - cX, tileSize) - 1;
+function getGridIndexAtCanvasPos({ x, y }) {
+    const { canvasX, canvasY, tileSize } = context.board;
+
+    const gridXRaw = x - canvasX > 0
+        ? intDiv(x - canvasX, tileSize)
+        : intDiv(x - canvasX, tileSize) - 1;
     const gridX = gridXRaw + GRID_SIZE / 2;
 
-    const gridYRaw = canvasY - cY > 0
-        ? intDiv(canvasY - cY, tileSize)
-        : intDiv(canvasY - cY, tileSize) - 1;
+    const gridYRaw = y - canvasY > 0
+        ? intDiv(y - canvasY, tileSize)
+        : intDiv(y - canvasY, tileSize) - 1;
     const gridY = gridYRaw + GRID_SIZE / 2;
 
     const gridIndex = GRID_SIZE * gridY + gridX;
@@ -103,11 +109,10 @@ function getGridIndexAt({ canvasX, canvasY }) {
 
 module.exports = {
     getCoords,
-    getGridIndexAt,
+    getGridIndexAtCanvasPos,
     initBoard,
     isBlueDisk,
     isBlueRing,
     isRedDisk,
     isRedRing,
-    putPiece,
 };
