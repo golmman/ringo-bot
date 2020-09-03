@@ -92,6 +92,28 @@ function initBoard(board) {
     //addBlueDisk(board, BLUE_DISK + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter + 1 }));
     //addBlueDisk(board, BLUE_DISK + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
     //addRedDisk(board, RED_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 4 }));
+
+    addBlueDisk(board, BLUE_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 0 }));
+    addBlueDisk(board, BLUE_DISK + 1, getGridIndex({ x: gridCenter + 4, y: gridCenter + 0 }));
+    addBlueDisk(board, BLUE_DISK + 2, getGridIndex({ x: gridCenter + 5, y: gridCenter + 0 }));
+    addBlueDisk(board, BLUE_DISK + 3, getGridIndex({ x: gridCenter + 3, y: gridCenter + 1 }));
+    addBlueDisk(board, BLUE_DISK + 4, getGridIndex({ x: gridCenter + 4, y: gridCenter + 1 }));
+    addBlueDisk(board, BLUE_DISK + 5, getGridIndex({ x: gridCenter + 5, y: gridCenter + 1 }));
+    addBlueDisk(board, BLUE_DISK + 6, getGridIndex({ x: gridCenter + 3, y: gridCenter + 2 }));
+    addBlueDisk(board, BLUE_DISK + 7, getGridIndex({ x: gridCenter + 4, y: gridCenter + 2 }));
+    addBlueDisk(board, BLUE_DISK + 8, getGridIndex({ x: gridCenter + 5, y: gridCenter + 2 }));
+    addBlueDisk(board, BLUE_DISK + 9, getGridIndex({ x: gridCenter + 6, y: gridCenter + 2 }));
+
+    addRedDisk(board, RED_DISK + 0, getGridIndex({ y: gridCenter + 3, x: gridCenter + 0 }));
+    addRedDisk(board, RED_DISK + 1, getGridIndex({ y: gridCenter + 4, x: gridCenter + 0 }));
+    addRedDisk(board, RED_DISK + 2, getGridIndex({ y: gridCenter + 5, x: gridCenter + 0 }));
+    addRedDisk(board, RED_DISK + 3, getGridIndex({ y: gridCenter + 3, x: gridCenter + 1 }));
+    addRedDisk(board, RED_DISK + 4, getGridIndex({ y: gridCenter + 4, x: gridCenter + 1 }));
+    addRedDisk(board, RED_DISK + 5, getGridIndex({ y: gridCenter + 5, x: gridCenter + 1 }));
+    addRedDisk(board, RED_DISK + 6, getGridIndex({ y: gridCenter + 3, x: gridCenter + 2 }));
+    addRedDisk(board, RED_DISK + 7, getGridIndex({ y: gridCenter + 4, x: gridCenter + 2 }));
+    addRedDisk(board, RED_DISK + 8, getGridIndex({ y: gridCenter + 5, x: gridCenter + 2 }));
+    addRedDisk(board, RED_DISK + 9, getGridIndex({ y: gridCenter + 6, x: gridCenter + 2 }));
 }
 
 function isBlueDisk(piece) {

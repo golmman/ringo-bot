@@ -100,15 +100,18 @@ function generateDiskDropMoves(board, ring, diskFrom, moves) {
 
 function generateRemovableDisks(board) {
     // TODO: stub
-    return [];
+
+    const removableDisks = board.activeDisks;
+
+    return removableDisks;
 }
 
 function generateDiskTransferMoves(board, ring, moves) {
     const removableDisks = generateRemovableDisks(board);
 
-    for (let k = 0; k < removableDisks.length; k += 1) {
-        generateDiskDropMoves(board, ring, removableDisks[k], moves);
-    }
+    removableDisks.forEach((removableDisk) => {
+        generateDiskDropMoves(board, ring, removableDisk, moves);
+    });
 }
 
 function generateMovesForRings(board, rings, moves) {

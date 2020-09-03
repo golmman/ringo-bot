@@ -102,7 +102,7 @@ function handleMouseClick(event) {
     console.log('handleMouseClick');
     const { phase } = context.events;
     const { canvasX, canvasY, tileSize } = context.board;
-    const { dropDiskMoves, dropRingMoves } = context.draw;
+    const { pickDiskMoves, dropDiskMoves, dropRingMoves } = context.draw;
 
     const canvasRect = context.canvas.getBoundingClientRect();
 
@@ -114,6 +114,18 @@ function handleMouseClick(event) {
     console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
 
     if (event.detail === 2) {
+        if (phase === PICK_DISK_PHASE) {
+            if (pickDiskMoves.has(gridIndex)) {
+                console.log('pick disk phase legal move');
+                context.draw.move.diskFrom = gridIndex;
+                context.events.phase = DROP_DISK_PHASE;
+
+                redraw();
+            } else {
+                console.log('pick disk phase illegal move');
+            }
+        }
+
         if (phase === DROP_DISK_PHASE) {
             if (dropDiskMoves.has(gridIndex)) {
                 console.log('drop disk phase legal move');
