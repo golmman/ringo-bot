@@ -156,7 +156,7 @@ function makeMove(board, { diskFrom, diskTo, ringTo }) {
     const deletedRing = deleteRing(board, diskTo)
 
     addDisk(board, deletedDisk, diskTo);
-    addRing(board, deleteRing, ringTo);
+    addRing(board, deletedRing, ringTo);
 
     console.log(board.redRings);
 
