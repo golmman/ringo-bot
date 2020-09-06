@@ -1,13 +1,6 @@
 const { GRID_SIZE } = require('./constants');
 const { isBlueDisk, isRedDisk } = require('./board');
 
-const DIRECTIONS = {
-    EAST,
-    SOUTH,
-    SOUTH_EAST,
-    SOUTH_WEST,
-};
-
 const DIRECTION_INDICES = [
     [1, 2, 3], // east
     [GRID_SIZE, 2 * GRID_SIZE, 3 * GRID_SIZE], // south
@@ -21,21 +14,18 @@ function isWinAtDirection(board, gridIndex, isProperColor, direction) {
 
     directionIndices.forEach((directionIndex) => {
         const piece = board.grid[gridIndex + directionIndex];
-        if (isProperColor(piece)) {
-            lineLength += 1;
-        } else {
+        if (!isProperColor(piece)) {
             return;
         }
+        lineLength += 1;
     });
-
 
     directionIndices.forEach((directionIndex) => {
         const piece = board.grid[gridIndex - directionIndex];
-        if (isProperColor(piece)) {
-            lineLength += 1;
-        } else {
+        if (!isProperColor(piece)) {
             return;
         }
+        lineLength += 1;
     });
 
     return lineLength >= 4;
