@@ -10,28 +10,42 @@ const DIRECTION_INDICES = [
 
 function isWinAtDirection(board, gridIndex, isProperColor, direction) {
     const directionIndices = DIRECTION_INDICES[direction];
-    let lineLength = 0;
+    let lineLength = 1;
 
-    directionIndices.forEach((directionIndex) => {
+    for (const directionIndex of directionIndices) {
         const piece = board.grid[gridIndex + directionIndex];
         if (!isProperColor(piece)) {
-            return;
+            break;
         }
         lineLength += 1;
-    });
 
-    directionIndices.forEach((directionIndex) => {
+        const x = (gridIndex + directionIndex) % GRID_SIZE;
+        const y = (gridIndex + directionIndex) / GRID_SIZE;
+        console.log(`f ${piece} ${x} ${y}`);
+    }
+
+    for (const directionIndex of directionIndices) {
         const piece = board.grid[gridIndex - directionIndex];
         if (!isProperColor(piece)) {
-            return;
+            break;
         }
         lineLength += 1;
-    });
+
+        const x = (gridIndex + directionIndex) % GRID_SIZE;
+        const y = (gridIndex + directionIndex) / GRID_SIZE;
+        console.log(`b ${piece} ${x} ${y}`);
+    }
+
+    console.log(direction, lineLength);
 
     return lineLength >= 4;
 }
 
 function isWinAt(board, gridIndex, isProperColor) {
+    if (!isProperColor(board.grid[gridIndex])) {
+        return false;
+    }
+
     for (let direction = 0; direction < 4; direction += 1) {
         if (isWinAtDirection(board, gridIndex, isProperColor, direction)) {
             return true;
@@ -42,11 +56,11 @@ function isWinAt(board, gridIndex, isProperColor) {
 }
 
 function isBlueWinAt(board, gridIndex) {
-    isWinAt(board, gridIndex, isBlueDisk);
+    return isWinAt(board, gridIndex, isBlueDisk);
 }
 
 function isRedWinAt(board, gridIndex) {
-    isWinAt(board, gridIndex, isRedDisk);
+    return isWinAt(board, gridIndex, isRedDisk);
 }
 
 module.exports = {

@@ -91,7 +91,8 @@ function printBoard(board) {
 
         const row = board.grid
             .slice(start, end)
-            .map((p) => getPieceNice(p))
+            //.map((p) => getPieceNice(p))
+            .map((p) => getPieceShorthand(p))
             .join(' ');
         console.log(row);
     }
@@ -124,7 +125,6 @@ function setupBoard(piecesString, otherBoard) {
     const gridCenter = GRID_SIZE / 2;
 
     const pieces = createPiecesGrid(piecesString);
-    console.log(pieces);
 
     pieces.forEach((row, y) => {
         row.forEach((piece, x) => {
