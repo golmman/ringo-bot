@@ -89,10 +89,6 @@ function initBoard(board) {
     addRedRing(board, RED_RING + 2, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
     addRedRing(board, RED_RING + 3, getGridIndex({ x: gridCenter + 1, y: gridCenter + 2 }));
 
-    //addBlueDisk(board, BLUE_DISK + 0, getGridIndex({ x: gridCenter + 1, y: gridCenter + 1 }));
-    //addBlueDisk(board, BLUE_DISK + 1, getGridIndex({ x: gridCenter + 2, y: gridCenter + 1 }));
-    //addRedDisk(board, RED_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 4 }));
-
     addBlueDisk(board, BLUE_DISK + 0, getGridIndex({ x: gridCenter + 3, y: gridCenter + 0 }));
     addBlueDisk(board, BLUE_DISK + 1, getGridIndex({ x: gridCenter + 4, y: gridCenter + 0 }));
     addBlueDisk(board, BLUE_DISK + 2, getGridIndex({ x: gridCenter + 5, y: gridCenter + 0 }));

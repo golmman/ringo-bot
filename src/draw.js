@@ -7,9 +7,18 @@ const {
     PICK_DISK_PHASE,
     DROP_DISK_PHASE,
     DROP_RING_PHASE,
-    RED,
-    BLUE,
 } = require('./constants');
+
+function convertBoardToCanvasCoords({ x, y }) {
+    const { canvasX, canvasY, tileSize } = context.board;
+    const tx = x - GRID_SIZE / 2;
+    const ty = y - GRID_SIZE / 2;
+
+    return {
+        x: canvasX + tx * tileSize,
+        y: canvasY + ty * tileSize,
+    };
+}
 
 function drawBlueDisk(ctx, { x, y }) {
     const { tileSize } = context.board;
@@ -95,8 +104,6 @@ function drawPhasePiece(ctx) {
     const { move } = context.draw;
 
     const {
-        canvasX,
-        canvasY,
         tileSize,
         isBlueTurn,
         grid,
@@ -139,9 +146,8 @@ function drawPhasePiece(ctx) {
 }
 
 function drawPossibleMoves(ctx) {
-    const { canvasX, canvasY, tileSize } = context.board;
+    const { tileSize } = context.board;
     const { phase } = context.events;
-    const { generatedMoves } = context.draw;
     let highlightedTiles = new Set();
 
     if (phase === OPPONENT_PHASE) {
@@ -216,17 +222,6 @@ function drawMouseHighlight(ctx) {
         tileSize,
         tileSize,
     );
-}
-
-function convertBoardToCanvasCoords({ x, y }) {
-    const { canvasX, canvasY, tileSize } = context.board;
-    const tx = x - GRID_SIZE / 2;
-    const ty = y - GRID_SIZE / 2;
-
-    return {
-        x: canvasX + tx * tileSize,
-        y: canvasY + ty * tileSize,
-    };
 }
 
 function drawBlueDisks(ctx) {

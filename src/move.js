@@ -156,7 +156,7 @@ function makeMove(board, { diskFrom, diskTo, ringTo }) {
     const deletedDisk = diskFrom > 0
         ? deleteDisk(board, diskFrom)
         : nextDisk;
-    const deletedRing = deleteRing(board, diskTo)
+    const deletedRing = deleteRing(board, diskTo);
 
     addDisk(board, deletedDisk, diskTo);
     addRing(board, deletedRing, ringTo);
@@ -166,6 +166,8 @@ function makeMove(board, { diskFrom, diskTo, ringTo }) {
     return 1;
 }
 
+// TODO: stub
+// eslint-disable-next-line
 function unmakeMove(board, { diskFrom, diskTo, ringTo }) {
     return 1;
 }

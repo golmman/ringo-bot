@@ -6,11 +6,11 @@
 // center disk result in an island?".
 
 const islands = [
-`
-000
-0 0
-000
-`
+    `
+    000
+    0 0
+    000
+    `,
 ];
 
 function generateIslandIndex(vicinityString) {
@@ -21,8 +21,9 @@ function generateIslandBuckets() {
 
 }
 
-const x = islands[0].replace(/\s/g , '');
+const x = islands[0].replace(/\s/g, '');
 console.log(generateIslandIndex(x));
 
 module.exports = {
+    generateIslandBuckets,
 };

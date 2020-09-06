@@ -101,7 +101,6 @@ function handleKeyDown(event) {
 function handleMouseClick(event) {
     console.log('handleMouseClick');
     const { phase } = context.events;
-    const { canvasX, canvasY, tileSize } = context.board;
     const { pickDiskMoves, dropDiskMoves, dropRingMoves } = context.draw;
 
     const canvasRect = context.canvas.getBoundingClientRect();
