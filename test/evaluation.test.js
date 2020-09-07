@@ -1,48 +1,86 @@
 const { expect } = require('chai');
-const { isBlueWinAt, isRedWinAt } = require('../src/evaluation');
+const {
+    isBlueDisk,
+    isBlueRing,
+    isRedDisk,
+    isRedRing,
+} = require('../src/board');
+const {
+    isBlueDiskWinAt,
+    isRedDiskWinAt,
+    isBlueRingWinAt,
+    isRedRingWinAt,
+} = require('../src/evaluation');
 const util = require('./util');
 const { GRID_SIZE } = require('../src/constants');
 
 describe('evaluation', () => {
-    it('blue wins south and twice', () => {
+    it('correctly recognizes all wins', () => {
         const board = util.setupBoard(`
-            bb0rrB
-            bbrrrR
-            brb000
-            bbbbr0
+            bb0rrB0R
+            bbrrrR0R
+            brbb0rBR
+            bbbbr0rR
+            0b00000r
+            b0BBBBBB
         `);
-        util.printBoard(board);
 
-        const blueWin = isBlueWinAt(board, GRID_SIZE * 128 + 128);
-
-        expect(blueWin).to.equal(true);
-    });
-
-    it('blue wins east', () => {
-        const board = util.setupBoard(`
-            bb0rrB
-            bbrrrR
-            brb000
-            bbbbr0
+        const wins = util.setupBoard(`
+            b00r000R
+            bb00r00R
+            b00b0r0R
+            bbbb00rR
+            0b00000r
+            b0BBBBBB
         `);
-        util.printBoard(board);
 
-        const blueWin = isBlueWinAt(board, GRID_SIZE * 131 + 130);
+        let blueDiskWins = 0;
+        let redDiskWins = 0;
+        let blueRingWins = 0;
+        let redRingWins = 0;
 
-        expect(blueWin).to.equal(true);
-    });
+        for (let k = 0; k < GRID_SIZE * GRID_SIZE; k += 1) {
+            const blueDiskWin = isBlueDiskWinAt(board, k);
+            const redDiskWin = isRedDiskWinAt(board, k);
+            const blueRingWin = isBlueRingWinAt(board, k);
+            const redRingWin = isRedRingWinAt(board, k);
 
-    it('blue wins south-east', () => {
-        const board = util.setupBoard(`
-            bb0rrB
-            bbrrrR
-            brb000
-            bbbbr0
-        `);
-        util.printBoard(board);
+            if (isBlueDisk(wins.grid[k])) {
+                expect(blueDiskWin).to.equal(true);
+                expect(redDiskWin).to.equal(false);
+                expect(blueRingWin).to.equal(false);
+                expect(redRingWin).to.equal(false);
+                blueDiskWins += 1;
+            }
 
-        const blueWin = isBlueWinAt(board, GRID_SIZE * 129 + 129);
+            if (isRedDisk(wins.grid[k])) {
+                expect(blueDiskWin).to.equal(false);
+                expect(redDiskWin).to.equal(true);
+                expect(blueRingWin).to.equal(false);
+                expect(redRingWin).to.equal(false);
+                redDiskWins += 1;
+            }
 
-        expect(blueWin).to.equal(true);
+            if (isBlueRing(wins.grid[k])) {
+                expect(blueDiskWin).to.equal(false);
+                expect(redDiskWin).to.equal(false);
+                expect(blueRingWin).to.equal(true);
+                expect(redRingWin).to.equal(false);
+                blueRingWins += 1;
+            }
+
+            if (isRedRing(wins.grid[k])) {
+                expect(blueDiskWin).to.equal(false);
+                expect(redDiskWin).to.equal(false);
+                expect(blueRingWin).to.equal(false);
+                expect(redRingWin).to.equal(true);
+                redRingWins += 1;
+            }
+        }
+
+        expect(blueDiskWins).to.equal(11);
+        expect(redDiskWins).to.equal(5);
+        expect(blueRingWins).to.equal(6);
+        expect(redRingWins).to.equal(4);
     });
 });

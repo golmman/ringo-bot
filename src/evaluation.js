@@ -1,5 +1,10 @@
 const { GRID_SIZE } = require('./constants');
-const { isBlueDisk, isRedDisk } = require('./board');
+const {
+    isBlueDisk,
+    isBlueRing,
+    isRedDisk,
+    isRedRing,
+} = require('./board');
 
 const DIRECTION_INDICES = [
     [1, 2, 3], // east
@@ -8,46 +13,36 @@ const DIRECTION_INDICES = [
     [GRID_SIZE - 1, 2 * GRID_SIZE - 2, 3 * GRID_SIZE - 3], // south-west
 ];
 
-function isWinAtDirection(board, gridIndex, isProperColor, direction) {
+function isWinAtDirection(board, gridIndex, isProperPiece, direction) {
     const directionIndices = DIRECTION_INDICES[direction];
     let lineLength = 1;
 
     for (const directionIndex of directionIndices) {
         const piece = board.grid[gridIndex + directionIndex];
-        if (!isProperColor(piece)) {
+        if (!isProperPiece(piece)) {
             break;
         }
         lineLength += 1;
-
-        const x = (gridIndex + directionIndex) % GRID_SIZE;
-        const y = (gridIndex + directionIndex) / GRID_SIZE;
-        console.log(`f ${piece} ${x} ${y}`);
     }
 
     for (const directionIndex of directionIndices) {
         const piece = board.grid[gridIndex - directionIndex];
-        if (!isProperColor(piece)) {
+        if (!isProperPiece(piece)) {
             break;
         }
         lineLength += 1;
-
-        const x = (gridIndex + directionIndex) % GRID_SIZE;
-        const y = (gridIndex + directionIndex) / GRID_SIZE;
-        console.log(`b ${piece} ${x} ${y}`);
     }
-
-    console.log(direction, lineLength);
 
     return lineLength >= 4;
 }
 
-function isWinAt(board, gridIndex, isProperColor) {
-    if (!isProperColor(board.grid[gridIndex])) {
+function isWinAt(board, gridIndex, isProperPiece) {
+    if (!isProperPiece(board.grid[gridIndex])) {
         return false;
     }
 
     for (let direction = 0; direction < 4; direction += 1) {
-        if (isWinAtDirection(board, gridIndex, isProperColor, direction)) {
+        if (isWinAtDirection(board, gridIndex, isProperPiece, direction)) {
             return true;
         }
     }
@@ -55,15 +50,25 @@ function isWinAt(board, gridIndex, isProperColor) {
     return false;
 }
 
-function isBlueWinAt(board, gridIndex) {
+function isBlueDiskWinAt(board, gridIndex) {
     return isWinAt(board, gridIndex, isBlueDisk);
 }
 
-function isRedWinAt(board, gridIndex) {
+function isRedDiskWinAt(board, gridIndex) {
     return isWinAt(board, gridIndex, isRedDisk);
 }
 
+function isBlueRingWinAt(board, gridIndex) {
+    return isWinAt(board, gridIndex, isBlueRing);
+}
+
+function isRedRingWinAt(board, gridIndex) {
+    return isWinAt(board, gridIndex, isRedRing);
+}
+
 module.exports = {
-    isBlueWinAt,
-    isRedWinAt,
+    isBlueDiskWinAt,
+    isRedDiskWinAt,
+    isBlueRingWinAt,
+    isRedRingWinAt,
 };

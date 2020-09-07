@@ -50,19 +50,19 @@ function getPieceShorthand(piece) {
 
 function getPieceNice(piece) {
     if (isBlueDisk(piece)) {
-        return blue('\u{23FA}');
+        return blue('•');
     }
     if (isRedDisk(piece)) {
-        return red('\u{23FA}');
+        return red('•');
     }
     if (isBlueRing(piece)) {
-        return blue('\u{2B55}');
+        return blue('O');
     }
     if (isRedRing(piece)) {
-        return red('\u{2B55}');
+        return red('O');
     }
 
-    return '\u{00B7}';
+    return '·';
 }
 
 function printBoard(board) {
@@ -91,8 +91,7 @@ function printBoard(board) {
 
         const row = board.grid
             .slice(start, end)
-            //.map((p) => getPieceNice(p))
-            .map((p) => getPieceShorthand(p))
+            .map((p) => getPieceNice(p))
             .join(' ');
         console.log(row);
     }
