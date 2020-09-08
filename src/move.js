@@ -1,3 +1,4 @@
+const { getRandomInt } = require('util');
 const {
     addBlueDisk,
     addBlueRing,
@@ -16,6 +17,7 @@ const {
     GRID_SIZE,
     MARKED,
     MAX_DISKS,
+    MAX_RINGS,
     RED_DISK,
 } = require('./constants');
 
@@ -99,7 +101,7 @@ function generateDiskDropMoves(board, ring, diskFrom, moves) {
 }
 
 function generateRemovableDisks(board) {
-    // TODO: stub
+    // TODO: prevents disk islands being formed
 
     const removableDisks = board.activeDisks;
 
@@ -135,6 +137,44 @@ function generateMoves(board) {
     generateMovesForRings(board, board.redRings, moves);
 
     return moves;
+}
+
+function generateRandomMove(board) {
+    const move = {};
+
+    board.activeDisks = board.isBlueTurn
+        ? board.blueDisks
+        : board.redDisks;
+
+    if (board.activeDisks.size < MAX_DISKS) {
+        move.diskFrom = -1;
+    } else {
+        // TODO: make disk/ring sets arrays to avoid costly conversions
+        move.diskFrom = new Array(board.activeDisks)[getRandomInt(MAX_DISKS)];
+    }
+
+    const relevantRings = Array(board.blueRings).concat(Array(board.redRings));
+
+    const maxRings2 = 2 * MAX_RINGS;
+    const r = getRandomInt(maxRings2);
+    move.diskTo = relevantRings.splice(r, 1)[0];
+
+    findRingTo: {
+        for (let k = 0; k < maxRings2 - 1; k += 1) {
+            const ringIndex = getRandomInt(relevantRings.length);
+            const ring = relevantRings.splice(ringIndex, 1)[0];
+
+            const directions = [1, -1, GRID_SIZE, -GRID_SIZE];
+            for (let l = 0; l < 4; l += 1) {
+                const dirIndex = getRandomInt(directions.length);
+                const dir = directions.splice(dirIndex, 1)[0];
+
+                if (board.grid[ring + dir] === EMPTY) {
+                    break findRingTo;
+                }
+            }
+        }
+    }
 }
 
 function makeMove(board, { diskFrom, diskTo, ringTo }) {
@@ -173,7 +213,8 @@ function unmakeMove(board, { diskFrom, diskTo, ringTo }) {
 }
 
 module.exports = {
+    generateMoves,
+    generateRandomMove,
     makeMove,
     unmakeMove,
-    generateMoves,
 };

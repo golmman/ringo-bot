@@ -13,9 +13,11 @@
                 "SwitchCase": 1
             }
         ],
-        "no-mixed-operators": "off",
         "no-bitwise": "off",
+        "no-labels": "off",
+        "no-mixed-operators": "off",
         "no-param-reassign": "off",
-        "no-restricted-syntax": "off"
+        "no-restricted-syntax": "off",
+        "prefer-destructuring": "off"
     }
 }

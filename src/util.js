@@ -4,6 +4,11 @@ function intDiv(dividend, divisor) {
     return (dividend / divisor) | 0;
 }
 
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
 module.exports = {
+    getRandomInt,
     intDiv,
 };

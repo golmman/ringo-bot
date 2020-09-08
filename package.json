@@ -6,6 +6,7 @@
   "scripts": {
     "build": "npx webpack",
     "lint": "npx eslint 'src/**/*.js' './test/**/*.js'",
+    "lintq": "npx eslint 'src/**/*.js' './test/**/*.js' --quiet; true",
     "test": "npx mocha './test/**/*.test.js' --recursive"
   },
   "repository": {
