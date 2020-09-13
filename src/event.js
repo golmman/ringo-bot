@@ -42,19 +42,21 @@ function generatePickDiskMoves() {
     }
 }
 
-function generateDropDiskMoves() {
+function generateDropDiskMoves(diskFrom) {
     const { generatedMoves } = context.draw;
 
     context.draw.dropDiskMoves = new Set();
     for (let k = 0; k < generatedMoves.length; k += 1) {
-        context.draw.dropDiskMoves.add(generatedMoves[k].diskTo);
+        if (diskFrom === generatedMoves[k].diskFrom) {
+            context.draw.dropDiskMoves.add(generatedMoves[k].diskTo);
+        }
     }
 }
 
 function generateDropRingMoves(diskFrom, diskTo) {
     const { generatedMoves } = context.draw;
 
-    console.log('generateDropDiskMoves');
+    console.log('generateDropRingMoves');
 
     context.draw.dropRingMoves = new Set();
     for (let k = 0; k < generatedMoves.length; k += 1) {
@@ -73,7 +75,6 @@ function handleKeyDown(event) {
     if (event.keyCode === 70 && phase === OPPONENT_PHASE) { // f key
         context.draw.generatedMoves = generateMoves(context.board);
         generatePickDiskMoves();
-        generateDropDiskMoves();
 
         context.draw.move = {
             diskFrom: -1,
@@ -81,7 +82,11 @@ function handleKeyDown(event) {
             ringTo: -1,
         };
 
-        if (context.board.activeDisks.size < MAX_DISKS) {
+        const activeDisks = context.board.isBlueTurn
+            ? context.board.blueDisks
+            : context.board.redDisks;
+
+        if (activeDisks.size < MAX_DISKS) {
             context.events.phase = DROP_DISK_PHASE;
         } else {
             context.events.phase = PICK_DISK_PHASE;
@@ -131,6 +136,7 @@ function handleMouseClick(event) {
             console.log('pick disk phase legal move');
             context.draw.move.diskFrom = gridIndex;
             context.events.phase = DROP_DISK_PHASE;
+            generateDropDiskMoves(context.draw.move.diskFrom);
 
             redraw();
         } else {

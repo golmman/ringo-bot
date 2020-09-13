@@ -1,3 +1,4 @@
+const move2 = require('./move2');
 const { getRandomInt } = require('./util');
 const {
     addBlueDisk,
@@ -143,6 +144,7 @@ function generateMovesForRings(board, rings, moves) {
 }
 
 function generateMoves(board) {
+    //return move2.generateMoves(board);
     const moves = [];
 
     board.activeDisks = board.isBlueTurn

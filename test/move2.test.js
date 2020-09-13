@@ -1,14 +1,44 @@
 const { expect } = require('chai');
 const {
+    mergeSets,
+} = require('../src/util');
+const {
     setupBoard,
 } = require('../src/board');
 const {
     generateMoves,
-    generateRandomMove,
-} = require('../src/move');
+    generateRingDrops,
+} = require('../src/move2');
+
+describe('move.generateRingDrops', () => {
+    it('generates the ring drop set for the starting postion', () => {
+        const board = setupBoard({}, `
+            BRB
+            R0R
+            BRB
+        `);
+        const rings = mergeSets(board.blueRings, board.redRings);
+        const ringDrops = generateRingDrops(board, rings);
+        expect(ringDrops).to.have.lengthOf(13);
+    });
+
+    it('generates the ring drop set for a cramped positon', () => {
+        const board = setupBoard({}, `
+            0rr0
+            bBRbbb
+            bRBbrrr
+            bBRbrrr
+            bRBb
+            0rr0
+        `);
+        const rings = mergeSets(board.blueRings, board.redRings);
+        const ringDrops = generateRingDrops(board, rings);
+        expect(ringDrops).to.have.lengthOf(12);
+    });
+});
 
 describe('move.generateMoves', () => {
-    it('generates all legal moves for start position', () => {
+    it('generates all legal moves for starting position', () => {
         const board = setupBoard({}, `
             BRB
             R0R
@@ -95,8 +125,8 @@ describe('move.generateRandomMove', () => {
         `);
         // const moves = generateMoves(board);
 
-        const move = generateRandomMove(board);
+        //const move = generateRandomMove(board);
 
-        console.log(move);
+        //console.log(move);
     });
 });

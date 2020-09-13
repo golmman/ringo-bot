@@ -85,12 +85,22 @@ function isRedDisk(piece) {
     return intDiv(piece, 1000) === 2;
 }
 
+function isDisk(piece) {
+    const p = intDiv(piece, 1000);
+    return p === 1 || p === 2;
+}
+
 function isBlueRing(piece) {
     return intDiv(piece, 1000) === 3;
 }
 
 function isRedRing(piece) {
     return intDiv(piece, 1000) === 4;
+}
+
+function isRing(piece) {
+    const p = intDiv(piece, 1000);
+    return p === 3 || p === 4;
 }
 
 function blue(text) {
@@ -223,14 +233,22 @@ function setupBoard(board, piecesString) {
 
 function initBoard(board) {
     setupBoard(board, `
-        BRBbbb0
-        R0Rbbb0
-        BRBbbbb
-        rrr0000
-        rrr0000
-        rrr0000
-        00r0000
+        0rr0
+        bBRbbb
+        bRBbrrr
+        bBRbrrr
+        bRBb
+        0rr0
     `);
+    //setupBoard(board, `
+    //    BRBbbb0
+    //    R0Rbbb0
+    //    BRBbbbb
+    //    rrr0000
+    //    rrr0000
+    //    rrr0000
+    //    00r0000
+    //`);
 }
 
 module.exports = {
@@ -247,8 +265,10 @@ module.exports = {
     initBoard,
     isBlueDisk,
     isBlueRing,
+    isDisk,
     isRedDisk,
     isRedRing,
+    isRing,
     printBoard,
     setupBoard,
 };

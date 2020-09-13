@@ -316,8 +316,8 @@ function redraw() {
 
     drawPossibleMoves(ctx);
     drawBoard(ctx);
-    drawOrigin(ctx);
     drawMouseHighlight(ctx);
+    drawOrigin(ctx);
     drawPieces(ctx);
     drawPhasePiece(ctx);
 }
