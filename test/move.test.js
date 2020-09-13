@@ -5,10 +5,7 @@ const {
 const {
     generateMoves,
     generateRandomMove,
-    makeMove,
-    unmakeMove,
 } = require('../src/move');
-const { GRID_SIZE } = require('../src/constants');
 
 describe('move.generateMoves', () => {
     it('generates all legal moves for start position', () => {
@@ -70,7 +67,7 @@ describe('move.generateRandomMove', () => {
             rrr0000
             00r0000
         `);
-        const moves = generateMoves(board);
+        // const moves = generateMoves(board);
 
         const move = generateRandomMove(board);
 

@@ -6,12 +6,92 @@ const {
     BLUE_RING,
     RED_RING,
     GRID_SIZE,
-    GRID_SIZE2,
 } = require('./constants');
 
 const COLOR_BLUE = '\x1b[34m';
 const COLOR_RED = '\x1b[31m';
 const COLOR_RESET = '\x1b[0m';
+
+function getCoords(gridIndex) {
+    return {
+        x: gridIndex % GRID_SIZE,
+        y: intDiv(gridIndex, GRID_SIZE),
+    };
+}
+
+function getGridIndex({ x, y }) {
+    return GRID_SIZE * y + x;
+}
+
+function setGridPiece(board, piece, gridIndex) {
+    board.grid[gridIndex] = piece;
+}
+
+function unsetGridPiece(board, gridIndex) {
+    const oldPiece = board.grid[gridIndex];
+    board.grid[gridIndex] = EMPTY;
+    return oldPiece;
+}
+
+function deleteBlueDisk(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.blueDisks.delete(gridIndex);
+    return oldPiece;
+}
+
+function deleteRedDisk(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.redDisks.delete(gridIndex);
+    return oldPiece;
+}
+
+function deleteBlueRing(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.blueRings.delete(gridIndex);
+    return oldPiece;
+}
+
+function deleteRedRing(board, gridIndex) {
+    const oldPiece = unsetGridPiece(board, gridIndex);
+    board.redRings.delete(gridIndex);
+    return oldPiece;
+}
+
+function addBlueDisk(board, disk, gridIndex) {
+    setGridPiece(board, disk, gridIndex);
+    board.blueDisks.add(gridIndex);
+}
+
+function addRedDisk(board, disk, gridIndex) {
+    setGridPiece(board, disk, gridIndex);
+    board.redDisks.add(gridIndex);
+}
+
+function addBlueRing(board, ring, gridIndex) {
+    setGridPiece(board, ring, gridIndex);
+    board.blueRings.add(gridIndex);
+}
+
+function addRedRing(board, ring, gridIndex) {
+    setGridPiece(board, ring, gridIndex);
+    board.redRings.add(gridIndex);
+}
+
+function isBlueDisk(piece) {
+    return intDiv(piece, 1000) === 1;
+}
+
+function isRedDisk(piece) {
+    return intDiv(piece, 1000) === 2;
+}
+
+function isBlueRing(piece) {
+    return intDiv(piece, 1000) === 3;
+}
+
+function isRedRing(piece) {
+    return intDiv(piece, 1000) === 4;
+}
 
 function blue(text) {
     return `${COLOR_BLUE}${text}${COLOR_RESET}`;
@@ -141,71 +221,6 @@ function setupBoard(board, piecesString) {
     return board;
 }
 
-function getCoords(gridIndex) {
-    return {
-        x: gridIndex % GRID_SIZE,
-        y: intDiv(gridIndex, GRID_SIZE),
-    };
-}
-
-function getGridIndex({ x, y }) {
-    return GRID_SIZE * y + x;
-}
-
-function setGridPiece(board, piece, gridIndex) {
-    board.grid[gridIndex] = piece;
-}
-
-function unsetGridPiece(board, gridIndex) {
-    const oldPiece = board.grid[gridIndex];
-    board.grid[gridIndex] = EMPTY;
-    return oldPiece;
-}
-
-function deleteBlueDisk(board, gridIndex) {
-    const oldPiece = unsetGridPiece(board, gridIndex);
-    board.blueDisks.delete(gridIndex);
-    return oldPiece;
-}
-
-function deleteRedDisk(board, gridIndex) {
-    const oldPiece = unsetGridPiece(board, gridIndex);
-    board.redDisks.delete(gridIndex);
-    return oldPiece;
-}
-
-function deleteBlueRing(board, gridIndex) {
-    const oldPiece = unsetGridPiece(board, gridIndex);
-    board.blueRings.delete(gridIndex);
-    return oldPiece;
-}
-
-function deleteRedRing(board, gridIndex) {
-    const oldPiece = unsetGridPiece(board, gridIndex);
-    board.redRings.delete(gridIndex);
-    return oldPiece;
-}
-
-function addBlueDisk(board, disk, gridIndex) {
-    setGridPiece(board, disk, gridIndex);
-    board.blueDisks.add(gridIndex);
-}
-
-function addRedDisk(board, disk, gridIndex) {
-    setGridPiece(board, disk, gridIndex);
-    board.redDisks.add(gridIndex);
-}
-
-function addBlueRing(board, ring, gridIndex) {
-    setGridPiece(board, ring, gridIndex);
-    board.blueRings.add(gridIndex);
-}
-
-function addRedRing(board, ring, gridIndex) {
-    setGridPiece(board, ring, gridIndex);
-    board.redRings.add(gridIndex);
-}
-
 function initBoard(board) {
     setupBoard(board, `
         BRBbbb0
@@ -218,22 +233,6 @@ function initBoard(board) {
     `);
 }
 
-function isBlueDisk(piece) {
-    return intDiv(piece, 1000) === 1;
-}
-
-function isRedDisk(piece) {
-    return intDiv(piece, 1000) === 2;
-}
-
-function isBlueRing(piece) {
-    return intDiv(piece, 1000) === 3;
-}
-
-function isRedRing(piece) {
-    return intDiv(piece, 1000) === 4;
-}
-
 module.exports = {
     addBlueDisk,
     addBlueRing,
@@ -244,6 +243,7 @@ module.exports = {
     deleteRedDisk,
     deleteRedRing,
     getCoords,
+    getGridIndex,
     initBoard,
     isBlueDisk,
     isBlueRing,

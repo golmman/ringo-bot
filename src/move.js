@@ -191,6 +191,8 @@ function generateRandomMove(board) {
             }
         }
     }
+
+    return null;
 }
 
 function makeMove(board, { diskFrom, diskTo, ringTo }) {
