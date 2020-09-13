@@ -9,7 +9,7 @@ function getRandomInt(max) {
 }
 
 function mergeSets(set1, set2) {
-    return new Set(function*() { yield* set1; yield* set2; }());
+    return new Set(function* () { yield* set1; yield* set2; }());
 }
 
 module.exports = {

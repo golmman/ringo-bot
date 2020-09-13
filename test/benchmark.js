@@ -1,5 +1,4 @@
 const move = require('../src/move');
-const move2 = require('../src/move2');
 const {
     setupBoard,
 } = require('../src/board');
@@ -21,9 +20,3 @@ for (let k = 0; k < MAX; k += 1) {
     move.generateMoves(board);
 }
 console.timeEnd('move');
-
-console.time('move2');
-for (let k = 0; k < MAX; k += 1) {
-    move2.generateMoves(board);
-}
-console.timeEnd('move2');
