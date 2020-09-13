@@ -4,6 +4,7 @@ const {
     isBlueRing,
     isRedDisk,
     isRedRing,
+    setupBoard,
 } = require('../src/board');
 const {
     isBlueDiskWinAt,
@@ -11,12 +12,11 @@ const {
     isBlueRingWinAt,
     isRedRingWinAt,
 } = require('../src/evaluation');
-const util = require('./util');
 const { GRID_SIZE } = require('../src/constants');
 
 describe('evaluation', () => {
     it('correctly recognizes all wins', () => {
-        const board = util.setupBoard(`
+        const board = setupBoard({}, `
             bb0rrB0R
             bbrrrR0R
             brbb0rBR
@@ -25,7 +25,7 @@ describe('evaluation', () => {
             b0BBBBBB
         `);
 
-        const wins = util.setupBoard(`
+        const wins = setupBoard({}, `
             b00r000R
             bb00r00R
             b00b0r0R
