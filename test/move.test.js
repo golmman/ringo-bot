@@ -114,7 +114,7 @@ describe('move.generateMoves', () => {
 
 describe('move.generateRandomMove', () => {
     it('generates all legal moves for board with 10 disks', () => {
-        const board = setupBoard({}, `
+        setupBoard({}, `
             BRBbbb0
             R0Rbbb0
             BRBbbbb
@@ -123,10 +123,5 @@ describe('move.generateRandomMove', () => {
             rrr0000
             00r0000
         `);
-        // const moves = generateMoves(board);
-
-        //const move = generateRandomMove(board);
-
-        //console.log(move);
     });
 });

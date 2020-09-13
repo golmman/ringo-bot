@@ -8,6 +8,7 @@ const {
     handleMouseMove,
     handleMouseUp,
     handleMouseWheel,
+    restartPhases,
 } = require('./event');
 
 function resizeCanvas() {
@@ -27,6 +28,7 @@ function restartGame(x) {
     resetContext();
     initBoard(context.board);
     resizeCanvas();
+    restartPhases();
 }
 
 window.addEventListener('resize', resizeCanvas);

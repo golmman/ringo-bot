@@ -74,6 +74,37 @@ function drawRedRing(ctx, { x, y }) {
     ctx.stroke();
 }
 
+function drawLastMove(ctx) {
+    const { lastMove } = context.draw;
+    const { tileSize } = context.board;
+    const highlightedTiles = [];
+
+    if (lastMove.diskFrom !== -1) {
+        highlightedTiles.push(lastMove.diskFrom);
+    }
+
+    if (lastMove.diskTo !== -1) {
+        highlightedTiles.push(lastMove.diskTo);
+    }
+
+    if (lastMove.ringTo !== -1) {
+        highlightedTiles.push(lastMove.ringTo);
+    }
+
+    highlightedTiles.forEach((tile) => {
+        const boardCoords = getCoords(tile);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+
+        ctx.fillStyle = 'rgb(48, 24, 24)';
+        ctx.fillRect(
+            canvasCoords.x,
+            canvasCoords.y,
+            tileSize,
+            tileSize,
+        );
+    });
+}
+
 function drawBoard(ctx) {
     const { tileSize } = context.board;
     const startX = context.board.canvasX % tileSize;
@@ -314,6 +345,7 @@ function redraw() {
 
     ctx.clearRect(0, 0, context.canvas.width, context.canvas.height);
 
+    drawLastMove(ctx);
     drawPossibleMoves(ctx);
     drawBoard(ctx);
     drawMouseHighlight(ctx);

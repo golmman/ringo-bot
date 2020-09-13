@@ -16,11 +16,16 @@ function resetContext() {
         },
         isMouseDown: false,
 
-        phase: constants.OPPONENT_PHASE,
+        phase: null,
     };
 
     context.draw = {
         move: {
+            diskFrom: -1,
+            diskTo: -1,
+            ringTo: -1,
+        },
+        lastMove: {
             diskFrom: -1,
             diskTo: -1,
             ringTo: -1,

@@ -2,6 +2,7 @@ const { context } = require('./context');
 const { redraw } = require('./draw');
 const { generateMoves, makeMove } = require('./move');
 const { intDiv } = require('./util');
+const { findBestMove } = require('./engine');
 const {
     OPPONENT_PHASE,
     PICK_DISK_PHASE,
@@ -67,42 +68,48 @@ function generateDropRingMoves(diskFrom, diskTo) {
     }
 }
 
+function restartPhases() {
+    console.log('restartPhases');
+    context.draw.generatedMoves = generateMoves(context.board);
+    generatePickDiskMoves();
+
+    context.draw.move = {
+        diskFrom: -1,
+        diskTo: -1,
+        ringTo: -1,
+    };
+
+    const activeDisks = context.board.isBlueTurn
+        ? context.board.blueDisks
+        : context.board.redDisks;
+
+    if (activeDisks.size < MAX_DISKS) {
+        context.events.phase = DROP_DISK_PHASE;
+    } else {
+        context.events.phase = PICK_DISK_PHASE;
+    }
+
+    redraw();
+}
+
+function runEngine() {
+    console.log('runEngine');
+    const { board } = context;
+
+    context.draw.lastMove = findBestMove(board);
+    makeMove(context.board, context.draw.lastMove);
+    context.board.isBlueTurn = !context.board.isBlueTurn;
+
+    restartPhases();
+}
+
 function handleKeyDown(event) {
     console.log(`handleKeyDown, keyCode: ${event.keyCode}`);
 
     const { phase } = context.events;
 
     if (event.keyCode === 70 && phase === OPPONENT_PHASE) { // f key
-        context.draw.generatedMoves = generateMoves(context.board);
-        generatePickDiskMoves();
-
-        context.draw.move = {
-            diskFrom: -1,
-            diskTo: -1,
-            ringTo: -1,
-        };
-
-        const activeDisks = context.board.isBlueTurn
-            ? context.board.blueDisks
-            : context.board.redDisks;
-
-        if (activeDisks.size < MAX_DISKS) {
-            context.events.phase = DROP_DISK_PHASE;
-        } else {
-            context.events.phase = PICK_DISK_PHASE;
-        }
-
-        redraw();
-
-        console.log(context.draw.generatedMoves);
-        console.log(`transitioned to phase: ${context.events.phase}`);
-
-        console.log('pick disk moves');
-        console.log(context.draw.pickDiskMoves);
-        console.log('drop disk moves');
-        console.log(context.draw.dropDiskMoves);
-        console.log('drop ring moves');
-        console.log(context.draw.dropRingMoves);
+        restartPhases();
     }
 }
 
@@ -169,6 +176,7 @@ function handleMouseClick(event) {
             };
 
             redraw();
+            runEngine();
         } else {
             console.log('drop ring phase illegal move');
         }
@@ -272,4 +280,5 @@ module.exports = {
     handleMouseMove,
     handleMouseUp,
     handleMouseWheel,
+    restartPhases,
 };
