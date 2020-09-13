@@ -114,11 +114,13 @@ function createPiecesGrid(piecesString) {
 // `;
 function setupBoard(piecesString, otherBoard) {
     const board = {
+        duplicationMarkers: [],
         grid: new Array(GRID_SIZE * GRID_SIZE).fill(EMPTY),
         blueDisks: new Set(),
         redDisks: new Set(),
         blueRings: new Set(),
         redRings: new Set(),
+        isBlueTurn: true,
     };
 
     const gridCenter = GRID_SIZE / 2;

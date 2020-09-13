@@ -1,4 +1,4 @@
-const { getRandomInt } = require('util');
+const { getRandomInt } = require('./util');
 const {
     addBlueDisk,
     addBlueRing,
@@ -165,29 +165,29 @@ function generateRandomMove(board) {
     if (board.activeDisks.size < MAX_DISKS) {
         move.diskFrom = -1;
     } else {
-        // TODO: make disk/ring sets arrays to avoid costly conversions
-        move.diskFrom = new Array(board.activeDisks)[getRandomInt(MAX_DISKS)];
+        // TODO: make disk/ring sets arrays to avoid costly conversions?
+        // -> this will make the (un)makeMove functions slower though...
+        move.diskFrom = Array.from(board.activeDisks)[getRandomInt(MAX_DISKS)];
     }
 
-    const relevantRings = Array(board.blueRings).concat(Array(board.redRings));
+    const relevantRings = Array.from(board.blueRings).concat(Array.from(board.redRings));
 
     const maxRings2 = 2 * MAX_RINGS;
     const r = getRandomInt(maxRings2);
     move.diskTo = relevantRings.splice(r, 1)[0];
 
-    findRingTo: {
-        for (let k = 0; k < maxRings2 - 1; k += 1) {
-            const ringIndex = getRandomInt(relevantRings.length);
-            const ring = relevantRings.splice(ringIndex, 1)[0];
+    for (let k = 0; k < maxRings2 - 1; k += 1) {
+        const ringIndex = getRandomInt(relevantRings.length);
+        const ring = relevantRings.splice(ringIndex, 1)[0];
 
-            const directions = [1, -1, GRID_SIZE, -GRID_SIZE];
-            for (let l = 0; l < 4; l += 1) {
-                const dirIndex = getRandomInt(directions.length);
-                const dir = directions.splice(dirIndex, 1)[0];
+        const directions = [1, -1, GRID_SIZE, -GRID_SIZE];
+        for (let l = 0; l < 4; l += 1) {
+            const dirIndex = getRandomInt(directions.length);
+            const dir = directions.splice(dirIndex, 1)[0];
 
-                if (board.grid[ring + dir] === EMPTY) {
-                    break findRingTo;
-                }
+            if (board.grid[ring + dir] === EMPTY) {
+                move.ringTo = ring + dir;
+                return move;
             }
         }
     }
