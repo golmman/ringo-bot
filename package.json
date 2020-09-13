@@ -4,7 +4,8 @@
   "description": "A small engine that lets you play ringo against it.",
   "private": true,
   "scripts": {
-    "build": "npx webpack",
+    "buildd": "npx webpack --mode=development",
+    "buildp": "npx webpack --mode=production",
     "lint": "npx eslint 'src/**/*.js' './test/**/*.js'",
     "lintq": "npx eslint 'src/**/*.js' './test/**/*.js' --quiet; true",
     "test": "npx mocha './test/**/*.test.js' --recursive"
@@ -26,6 +27,7 @@
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
     "mocha": "^8.1.3",
+    "terser-webpack-plugin": "^4.2.0",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12"
   }
