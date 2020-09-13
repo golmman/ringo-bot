@@ -26,7 +26,7 @@ function getGridIndexAtCanvasPos({ x, y }) {
 
     const gridIndex = GRID_SIZE * gridY + gridX;
 
-    console.log(`grid: ${gridX} ${gridY}`);
+    console.log(`grid: ${gridX} ${gridY}, gridIndex: ${gridIndex}`);
 
     return gridIndex;
 }
@@ -51,12 +51,15 @@ function generateDropDiskMoves() {
     }
 }
 
-function generateDropRingMoves(diskTo) {
+function generateDropRingMoves(diskFrom, diskTo) {
     const { generatedMoves } = context.draw;
+
+    console.log('generateDropDiskMoves');
 
     context.draw.dropRingMoves = new Set();
     for (let k = 0; k < generatedMoves.length; k += 1) {
-        if (diskTo === generatedMoves[k].diskTo) {
+        if (diskFrom === generatedMoves[k].diskFrom && diskTo === generatedMoves[k].diskTo) {
+            console.log(generatedMoves[k]);
             context.draw.dropRingMoves.add(generatedMoves[k].ringTo);
         }
     }
@@ -100,7 +103,14 @@ function handleKeyDown(event) {
 
 function handleMouseClick(event) {
     console.log('handleMouseClick');
+
     const { phase } = context.events;
+
+    if (phase === OPPONENT_PHASE) {
+        console.log('opponent phase, mouse click processing aborted');
+        return;
+    }
+
     const { pickDiskMoves, dropDiskMoves, dropRingMoves } = context.draw;
 
     const canvasRect = context.canvas.getBoundingClientRect();
@@ -112,51 +122,49 @@ function handleMouseClick(event) {
 
     console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
 
-    if (event.detail === 2) {
-        if (phase === PICK_DISK_PHASE) {
-            if (pickDiskMoves.has(gridIndex)) {
-                console.log('pick disk phase legal move');
-                context.draw.move.diskFrom = gridIndex;
-                context.events.phase = DROP_DISK_PHASE;
+    if (event.detail !== 2) {
+        return;
+    }
 
-                redraw();
-            } else {
-                console.log('pick disk phase illegal move');
-            }
+    if (phase === PICK_DISK_PHASE) {
+        if (pickDiskMoves.has(gridIndex)) {
+            console.log('pick disk phase legal move');
+            context.draw.move.diskFrom = gridIndex;
+            context.events.phase = DROP_DISK_PHASE;
+
+            redraw();
+        } else {
+            console.log('pick disk phase illegal move');
         }
+    } else if (phase === DROP_DISK_PHASE) {
+        if (dropDiskMoves.has(gridIndex)) {
+            console.log('drop disk phase legal move');
+            context.draw.move.diskTo = gridIndex;
+            context.events.phase = DROP_RING_PHASE;
+            generateDropRingMoves(context.draw.move.diskFrom, context.draw.move.diskTo);
 
-        if (phase === DROP_DISK_PHASE) {
-            if (dropDiskMoves.has(gridIndex)) {
-                console.log('drop disk phase legal move');
-                generateDropRingMoves(gridIndex);
-                context.draw.move.diskTo = gridIndex;
-                context.events.phase = DROP_RING_PHASE;
-
-                redraw();
-            } else {
-                console.log('drop disk phase illegal move');
-            }
+            redraw();
+        } else {
+            console.log('drop disk phase illegal move');
         }
+    } else if (phase === DROP_RING_PHASE) {
+        if (dropRingMoves.has(gridIndex)) {
+            console.log('drop ring phase legal move');
+            context.draw.move.ringTo = gridIndex;
+            makeMove(context.board, context.draw.move);
 
-        if (phase === DROP_RING_PHASE) {
-            if (dropRingMoves.has(gridIndex)) {
-                console.log('drop ring phase legal move');
-                context.draw.move.ringTo = gridIndex;
-                makeMove(context.board, context.draw.move);
+            context.events.phase = OPPONENT_PHASE;
+            context.board.isBlueTurn = !context.board.isBlueTurn;
 
-                context.events.phase = OPPONENT_PHASE;
-                context.board.isBlueTurn = !context.board.isBlueTurn;
+            context.draw.move = {
+                diskFrom: -1,
+                diskTo: -1,
+                ringTo: -1,
+            };
 
-                context.draw.move = {
-                    diskFrom: -1,
-                    diskTo: -1,
-                    ringTo: -1,
-                };
-
-                redraw();
-            } else {
-                console.log('drop ring phase illegal move');
-            }
+            redraw();
+        } else {
+            console.log('drop ring phase illegal move');
         }
     }
 }

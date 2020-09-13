@@ -21,40 +21,56 @@ const {
     RED_DISK,
 } = require('./constants');
 
-function generateAdjacentEmptyIndices(board, index) {
+function isIndexEmptyOrEmptied(board, index, diskFrom) {
+    if (board.grid[index] === EMPTY) {
+        return true;
+    }
+
+    if (board.grid[index] === MARKED) {
+        return false;
+    }
+
+    if (index === diskFrom) {
+        return true;
+    }
+
+    return false;
+}
+
+function generateAdjacentEmptyIndices(board, index, diskFrom) {
     const { grid, duplicationMarkers } = board;
 
     const emptyIndices = [];
 
     let i = index - GRID_SIZE;
-    if (grid[i] === EMPTY) {
+    if (isIndexEmptyOrEmptied(board, i, diskFrom)) {
         emptyIndices.push(i);
 
-        duplicationMarkers.push(i);
+        duplicationMarkers.push({ index: i, piece: grid[i] });
         grid[i] = MARKED;
     }
 
     i = index - 1;
-    if (grid[i] === EMPTY) {
+    if (isIndexEmptyOrEmptied(board, i, diskFrom)) {
         emptyIndices.push(i);
 
-        duplicationMarkers.push(i);
+        duplicationMarkers.push({ index: i, piece: grid[i] });
         grid[i] = MARKED;
     }
 
     i = index + 1;
-    if (grid[i] === EMPTY) {
+    if (isIndexEmptyOrEmptied(board, i, diskFrom)) {
         emptyIndices.push(i);
 
-        duplicationMarkers.push(i);
+        duplicationMarkers.push({ index: i, piece: grid[i] });
         grid[i] = MARKED;
     }
 
     i = index + GRID_SIZE;
-    if (grid[i] === EMPTY) {
+    if (isIndexEmptyOrEmptied(board, i, diskFrom)) {
         emptyIndices.push(i);
 
-        duplicationMarkers.push(i);
+        duplicationMarkers.push({ index: i, piece: grid[i] });
         grid[i] = MARKED;
     }
 
@@ -66,7 +82,7 @@ function generateRingMoves(board, ring, compareRing, diskFrom, moves) {
         return;
     }
 
-    const emptyIndices = generateAdjacentEmptyIndices(board, compareRing);
+    const emptyIndices = generateAdjacentEmptyIndices(board, compareRing, diskFrom);
     for (let k = 0; k < emptyIndices.length; k += 1) {
         moves.push({
             diskFrom,
@@ -78,9 +94,9 @@ function generateRingMoves(board, ring, compareRing, diskFrom, moves) {
 
 function removeDuplicationMarkers(board) {
     const { duplicationMarkers, grid } = board;
-    for (let k = 0; k < duplicationMarkers.length; k += 1) {
-        grid[duplicationMarkers[k]] = EMPTY;
-    }
+    duplicationMarkers.forEach(({ index, piece }) => {
+        grid[index] = piece;
+    });
 
     board.duplicationMarkers = [];
 }
@@ -200,8 +216,6 @@ function makeMove(board, { diskFrom, diskTo, ringTo }) {
 
     addDisk(board, deletedDisk, diskTo);
     addRing(board, deletedRing, ringTo);
-
-    console.log(board.redRings);
 
     return 1;
 }
