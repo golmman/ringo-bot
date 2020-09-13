@@ -103,6 +103,20 @@ function drawLastMove(ctx) {
             tileSize,
         );
     });
+
+    highlightedTiles.forEach((tile, i) => {
+        const boardCoords = getCoords(tile);
+        const canvasCoords = convertBoardToCanvasCoords(boardCoords);
+
+        const fontSize = tileSize / 5;
+        const fontY = i === 2
+            ? canvasCoords.y + tileSize
+            : canvasCoords.y + fontSize;
+
+        ctx.font = `${fontSize}px monospace`;
+        ctx.fillStyle = 'rgb(192, 192, 192)';
+        ctx.fillText(`${i + 1}`, canvasCoords.x, fontY);
+    });
 }
 
 function drawBoard(ctx) {
@@ -214,7 +228,7 @@ function drawPossibleMoves(ctx) {
 function drawOrigin(ctx) {
     const { canvasX, canvasY, tileSize } = context.board;
 
-    ctx.strokeStyle = 'rgb(255, 255, 255)';
+    ctx.strokeStyle = 'rgb(192, 192, 192)';
     ctx.lineWidth = 3;
 
     ctx.beginPath();
