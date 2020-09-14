@@ -111,8 +111,24 @@ function red(text) {
     return `${COLOR_RED}${text}${COLOR_RESET}`;
 }
 
-// eslint-disable-next-line no-unused-vars
-function getPieceShorthand(piece) {
+function mapPieceSimple(piece) {
+    if (isBlueDisk(piece)) {
+        return 'b';
+    }
+    if (isRedDisk(piece)) {
+        return 'r';
+    }
+    if (isBlueRing(piece)) {
+        return 'B';
+    }
+    if (isRedRing(piece)) {
+        return 'R';
+    }
+
+    return '-';
+}
+
+function mapPieceExact(piece) {
     if (isBlueDisk(piece)) {
         return blue(`b${piece - BLUE_DISK}`);
     }
@@ -129,7 +145,7 @@ function getPieceShorthand(piece) {
     return '--';
 }
 
-function getPieceNice(piece) {
+function mapPieceNice(piece) {
     if (isBlueDisk(piece)) {
         return blue('•');
     }
@@ -146,7 +162,7 @@ function getPieceNice(piece) {
     return '·';
 }
 
-function printBoard(board) {
+function printBoard(board, options) {
     const dimensions = {
         xMin: GRID_SIZE,
         yMin: GRID_SIZE,
@@ -165,6 +181,21 @@ function printBoard(board) {
         }
     });
 
+    let pieceMapper = mapPieceNice;
+    if (options) {
+        switch (options.pieceMapper) {
+            case 'simple':
+                pieceMapper = mapPieceSimple;
+                break;
+            case 'exact':
+                pieceMapper = mapPieceExact;
+                break;
+            default:
+                pieceMapper = mapPieceNice;
+                break;
+        }
+    }
+
     console.log(dimensions);
     for (let y = dimensions.yMin; y <= dimensions.yMax; y += 1) {
         const start = GRID_SIZE * y + dimensions.xMin;
@@ -172,7 +203,7 @@ function printBoard(board) {
 
         const row = board.grid
             .slice(start, end)
-            .map((p) => getPieceNice(p))
+            .map((p) => pieceMapper(p))
             .join(' ');
         console.log(row);
     }
@@ -233,13 +264,20 @@ function setupBoard(board, piecesString) {
 
 function initBoard(board) {
     setupBoard(board, `
-        0rr0
-        bBRbbb
-        bRBbrrr
-        bBRbrrr
-        bRBb
-        0rr0
+        BRB
+        R0R
+        BRB
     `);
+
+    //setupBoard(board, `
+    //    0rr0
+    //    bBRbbb
+    //    bRBbrrr
+    //    bBRbrrr
+    //    bRBb
+    //    0rr0
+    //`);
+
     //setupBoard(board, `
     //    BRBbbb0
     //    R0Rbbb0

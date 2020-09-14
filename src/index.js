@@ -31,6 +31,8 @@ function restartGame(x) {
     restartPhases();
 }
 
+window.addEventListener('contextmenu', (event) => { event.preventDefault(); });
+
 window.addEventListener('resize', resizeCanvas);
 
 window.addEventListener('keydown', handleKeyDown);

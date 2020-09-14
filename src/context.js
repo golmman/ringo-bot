@@ -34,6 +34,8 @@ function resetContext() {
         pickDiskMoves: null,
         dropDiskMoves: null,
         dropRingMoves: null,
+
+        winner: null,
     };
 
     context.board = {

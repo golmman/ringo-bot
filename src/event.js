@@ -4,12 +4,20 @@ const { generateMoves, makeMove } = require('./move');
 const { intDiv } = require('./util');
 const { findBestMove } = require('./engine');
 const {
-    OPPONENT_PHASE,
-    PICK_DISK_PHASE,
+    isBlueDiskWinAt,
+    isRedDiskWinAt,
+    isBlueRingWinAt,
+    isRedRingWinAt,
+} = require('./evaluation');
+const {
+    BLUE,
     DROP_DISK_PHASE,
     DROP_RING_PHASE,
-    MAX_DISKS,
     GRID_SIZE,
+    MAX_DISKS,
+    OPPONENT_PHASE,
+    PICK_DISK_PHASE,
+    RED,
 } = require('./constants');
 
 function getGridIndexAtCanvasPos({ x, y }) {
@@ -71,7 +79,6 @@ function generateDropRingMoves(diskFrom, diskTo) {
 function restartPhases() {
     console.log('restartPhases');
     context.draw.generatedMoves = generateMoves(context.board);
-    generatePickDiskMoves();
 
     context.draw.move = {
         diskFrom: -1,
@@ -85,11 +92,33 @@ function restartPhases() {
 
     if (activeDisks.size < MAX_DISKS) {
         context.events.phase = DROP_DISK_PHASE;
+        generateDropDiskMoves(-1);
     } else {
         context.events.phase = PICK_DISK_PHASE;
+        generatePickDiskMoves();
     }
 
     redraw();
+}
+
+function getWinner(move) {
+    const { board } = context;
+    console.log(move);
+
+    if (isBlueDiskWinAt(board, move.diskTo)) {
+        return BLUE;
+    }
+    if (isBlueRingWinAt(board, move.ringTo)) {
+        return BLUE;
+    }
+    if (isRedDiskWinAt(board, move.diskTo)) {
+        return RED;
+    }
+    if (isRedRingWinAt(board, move.ringTo)) {
+        return RED;
+    }
+
+    return null;
 }
 
 function runEngine() {
@@ -100,7 +129,10 @@ function runEngine() {
     makeMove(context.board, context.draw.lastMove);
     context.board.isBlueTurn = !context.board.isBlueTurn;
 
-    restartPhases();
+    context.draw.winner = getWinner(context.draw.lastMove);
+    if (context.draw.winner === null) {
+        restartPhases();
+    }
 }
 
 function handleKeyDown(event) {
@@ -134,9 +166,9 @@ function handleMouseClick(event) {
 
     console.log(`mouse: ${mouseX} ${mouseY}, click count: ${event.detail}`);
 
-    if (event.detail !== 2) {
-        return;
-    }
+    //if (event.detail !== 2) {
+    //    return;
+    //}
 
     if (phase === PICK_DISK_PHASE) {
         if (pickDiskMoves.has(gridIndex)) {
@@ -169,6 +201,8 @@ function handleMouseClick(event) {
             context.events.phase = OPPONENT_PHASE;
             context.board.isBlueTurn = !context.board.isBlueTurn;
 
+            context.draw.winner = getWinner(context.draw.move);
+
             context.draw.move = {
                 diskFrom: -1,
                 diskTo: -1,
@@ -176,7 +210,10 @@ function handleMouseClick(event) {
             };
 
             redraw();
-            runEngine();
+
+            if (context.draw.winner === null) {
+                runEngine();
+            }
         } else {
             console.log('drop ring phase illegal move');
         }
@@ -198,10 +235,11 @@ function handleMouseDown(event) {
     };
 
     context.events.isMouseDown = true;
+    context.events.mouseButton = event.button;
 }
 
 function handleMouseMove(event) {
-    if (context.events.isMouseDown) {
+    if (context.events.isMouseDown && context.events.mouseButton === 2) {
         const deltaX = event.screenX - context.events.mouseMove.screenX;
         const deltaY = event.screenY - context.events.mouseMove.screenY;
         context.board.canvasX += deltaX;
@@ -239,6 +277,7 @@ function handleMouseUp(event) {
         screenY,
     };
 
+    context.events.mouseButton = null;
     context.events.isMouseDown = false;
 }
 

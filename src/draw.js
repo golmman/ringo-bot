@@ -74,6 +74,27 @@ function drawRedRing(ctx, { x, y }) {
     ctx.stroke();
 }
 
+function drawGameOver(ctx) {
+    const { winner } = context.draw;
+    const { width, height } = context.canvas;
+
+    if (winner === null) {
+        return;
+    }
+
+    const fontSize = 0.33 * height;
+    const textMaxWidth = 0.75 * width;
+    const textX = 0.125 * width;
+    const textY = 0.66 * height;
+
+    const texts = ['you win', 'you lose'];
+    const text = texts[winner];
+
+    ctx.font = `${fontSize}px monospace`;
+    ctx.fillStyle = 'rgb(192, 192, 192)';
+    ctx.fillText(text, textX, textY, textMaxWidth);
+}
+
 function drawLastMove(ctx) {
     const { lastMove } = context.draw;
     const { tileSize } = context.board;
@@ -215,7 +236,7 @@ function drawPossibleMoves(ctx) {
         const boardCoords = getCoords(tile);
         const canvasCoords = convertBoardToCanvasCoords(boardCoords);
 
-        ctx.fillStyle = 'rgb(16, 64, 16)';
+        ctx.fillStyle = 'rgba(16, 64, 16, 0.5)';
         ctx.fillRect(
             canvasCoords.x,
             canvasCoords.y,
@@ -366,6 +387,7 @@ function redraw() {
     drawOrigin(ctx);
     drawPieces(ctx);
     drawPhasePiece(ctx);
+    drawGameOver(ctx);
 }
 
 module.exports = { redraw };
